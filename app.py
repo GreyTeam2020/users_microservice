@@ -1,12 +1,20 @@
 import connexion
 from database import init_db
 import logging
-from flask import request
+from flask import request, jsonify
 from services.user_service import UserService
 
 
 db_session = None
 
+def _get_response(message: str, code: int) -> None:
+    """
+    This method contains the code to make a new response for flask view
+    :param message: Message response
+    :param code: Code result
+    :return: a json object that look like {"result": "OK"}
+    """
+    return {"result": message}, code
 
 def create_user():
     """
@@ -14,17 +22,18 @@ def create_user():
     :return:
     """
     if request.method == "POST":
-        try:
-            user = UserService.create_user(db_session, request.get_json())
-        except Exception as ex:
-            return {"result": str(ex.message)}
+        json = request.get_json()
+        email = json["email"]
+        phone = json["phone"]
+        user = UserService.user_is_present(db_session, email, phone)
         if user is not None:
-            return {"result": "OK"}, 200
+            return _get_response("User with email {} and/or phone already exist".format(email, phone), 500)
+        user = UserService.create_user(db_session, json)
+        if user is not None:
+            return _get_response("OK", 200)
         else:
-            return {
-                "result": "User not created because we have an error on server"
-            }, 500
-    return {}, 400
+            return _get_response("User not created because we have an error on server", 500)
+    return _get_response("Resource not found", 400)
 
 
 logging.basicConfig(level=logging.INFO)
