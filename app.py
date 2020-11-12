@@ -21,7 +21,9 @@ def create_user():
         if user is not None:
             return {"result": "OK"}, 200
         else:
-            return {"result": "User not created because we have an error on server"}, 500
+            return {
+                "result": "User not created because we have an error on server"
+            }, 500
     return {}, 400
 
 
@@ -34,14 +36,15 @@ app.add_api("swagger.yml")
 application = app.app
 
 
-def _init_flask_app(flask_app):
+def _init_flask_app(flask_app, conf_type: str = "config.DebugConfiguration"):
     """
     This method init the flask app
     :param flask_app:
     """
-    flask_app.config.from_object("config.DebugConfiguration")
-
-
+    flask_app.config.from_object(conf_type)
+    if "TestConfiguration" in conf_type:
+        global db_session
+        db_session = init_db("sqlite:///tests/user.db")
 
 
 @application.teardown_appcontext

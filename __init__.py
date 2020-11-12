@@ -1,1 +1,2 @@
-from .database import User, session, init_db
+from .database import User, init_db
+from .app import db_session

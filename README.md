@@ -9,6 +9,8 @@
 
 ## Introduction
 
+The service run on the port 5002
+
 ## Resources
 
 - [Swagger references](https://swagger.io/specification/)

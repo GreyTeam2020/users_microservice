@@ -21,16 +21,8 @@ class UserService:
         :raise Generic exception if the user is already present, is used the function user_is_present
         :return: the user is it is crated
         """
-        email = json["email"]
-        phone = json["phone"]
-
-        user = UserService.user_is_present(db_session, email, phone)
-        if user is not None:
-            ex = Exception()
-            ex.message = "User with email {} or phone {} already present".format(email, phone)
-            raise ex
         new_user = User()
-        new_user.email = email
+        new_user.email = json["email"]
         current_app.logger.debug("Email user: {}".format(new_user.email))
         new_user.firstname = json["firstname"]
         current_app.logger.debug("First name {}".format(new_user.firstname))
@@ -38,7 +30,7 @@ class UserService:
         current_app.logger.debug("Last name {}".format(new_user.lastname))
         password = json["password"]
         current_app.logger.debug("User password {}".format(password))
-        new_user.phone = phone
+        new_user.phone = json["phone"]
         current_app.logger.debug("Phone {}".format(new_user.phone))
         date_string = json["dateofbirth"]
         current_app.logger.debug("date_string: {}".format(date_string))
@@ -49,7 +41,7 @@ class UserService:
         db_session.add(new_user)
         db_session.flush()
         db_session.commit()
-        return db_session.query(User).filter_by(email=new_user.email)
+        return db_session.query(User).filter_by(email=new_user.email).first()
 
     @staticmethod
     def user_is_present(db_session, email: str = None, phone: str = None):
@@ -59,6 +51,6 @@ class UserService:
         :param phone: phone number, if it is present we use to filter user
         :return: use user if exist otherwise, it is return None
         """
-        if phone is not None:
+        if phone is not None or len(phone) == 0:
             return db_session.query(User).filter_by(phone=phone).first()
         return db_session.query(User).filter_by(email=email).first()

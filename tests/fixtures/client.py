@@ -3,17 +3,20 @@ TODO
 """
 import pytest
 
-from monolith.app import create_app
+from app import application, _init_flask_app, db_session
 
 
 @pytest.fixture(autouse=True)
 def client():
-    app = create_app(tests=True)
-    app.config["TESTING"] = True
-    app.config["WTF_CSRF_ENABLED"] = False
-    app.config["DEBUG"] = True
-    ctx = app.app_context()
+    _init_flask_app(application, "config.TestConfiguration")
+    ctx = application.app_context()
     ctx.push()
 
-    with app.test_client() as client:
+    with application.test_client() as client:
         yield client
+
+
+@pytest.fixture(autouse=True)
+def db():
+    yield db_session
+    db_session.remove()
