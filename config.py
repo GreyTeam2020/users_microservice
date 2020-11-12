@@ -11,7 +11,7 @@ class BaseConfiguration(object):
 
 
 class DebugConfiguration(object):
-    DEBUG = False
+    DEBUG = True
     TESTING = False
     SECRET_KEY = "DEBUG_flask-session-insecure-secret-key"
     HASH_ROUNDS = 100000

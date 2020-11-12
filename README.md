@@ -1,4 +1,4 @@
-# Send Email services
+# User services
 
 ## Table of content
 

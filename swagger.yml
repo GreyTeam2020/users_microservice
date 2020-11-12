@@ -42,8 +42,7 @@ components:
           minLength: 1
           type: string
           description: User email
-          readOnly: true
-          example: adriani@gmail.com
+          example: "adriani@gmail.com"
         firstname:
           maxLength: 100
           minLength: 1
@@ -58,6 +57,7 @@ components:
           example: "Galiani"
         password:
           type: string
+          format: password
           minLength: 5
           maxLength: 50
           description: Password of the new user
@@ -70,8 +70,8 @@ components:
           example: "050123456"
         dateofbirth:
           type: string
-          format: date
-          example: "2017-07-21"
+          format: date-time
+          example: "2017-07-21T17:32:28Z"
     Result:
       required:
         - result

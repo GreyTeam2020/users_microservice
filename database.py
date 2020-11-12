@@ -2,7 +2,6 @@ from sqlalchemy import (
     create_engine,
     Column,
     Integer,
-    Float,
     Text,
     Unicode,
     DateTime,
@@ -15,7 +14,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db = declarative_base()
-db_session = None
+session = None
 
 
 class User(db):
@@ -79,11 +78,12 @@ class Positive(db):
 
 
 def init_db(uri):
-    global db_session
     engine = create_engine(uri, convert_unicode=True)
     db_session = scoped_session(
         sessionmaker(autocommit=False, autoflush=False, bind=engine)
     )
+    global session
+    session = db_session
     db.query = db_session.query_property()
     db.metadata.create_all(bind=engine)
 
@@ -100,3 +100,4 @@ def init_db(uri):
         first_operator.role_id = 2
         db_session.add(first_operator)
         db_session.commit()
+    return db_session
