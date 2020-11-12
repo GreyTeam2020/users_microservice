@@ -11,6 +11,8 @@
 
 The service run on the port 5002
 
+If there is some exception like db_session is working out of scope please look [here](https://www.reddit.com/r/learnpython/comments/5cwx34/flask_sqlite_error/dbhkhaa?utm_source=share&utm_medium=web2x&context=3)
+
 ## Resources
 
 - [Swagger references](https://swagger.io/specification/)
