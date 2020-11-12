@@ -6,88 +6,80 @@ info:
 servers:
 - url: /
 paths:
-  /restaurants:
-    get:
+  /create_user:
+    post:
       tags:
-      - Restaurants
-      summary: Get all restaurants
-      operationId: app.get_restaurants
-      responses:
-        200:
-          description: Return all restaurants
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  pets:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Restaurant'
-  /restaurants/{restaurant_id}:
-    get:
-      tags:
-      - Restaurants
-      summary: Get a single restaurant
-      operationId: app.get_restaurant
-      parameters:
-      - name: restaurant_id
-        in: path
-        description: Restaurant's Unique identifier
+        - User
+      summary: Create a new user.
+      operationId: app.create_user
+      requestBody:
         required: true
-        schema:
-          pattern: ^[a-zA-Z0-9-]+$
-          type: string
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
       responses:
         200:
-          description: Return restaurant
+          description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Restaurant'
-        404:
-          description: Restaurant does not exist
-          content: {}
+                $ref: '#/components/schemas/Result'
 components:
   schemas:
-    Restaurant:
+    User:
       required:
-      - name
-      - likes
-      - lat
-      - lon
+      - email
+      - firstname
+      - lastname
+      - password
       - phone
+      - dateofbirth
       type: object
       properties:
-        id:
-          type: integer
-          description: Unique identifier
-          readOnly: true
-          example: 123
-        name:
+        email:
           maxLength: 100
           minLength: 1
           type: string
-          description: Restaurant's name
-          example: "My Pizza Restaurant"
-        likes:
+          description: User email
+          readOnly: true
+          example: adriani@gmail.com
+        firstname:
+          maxLength: 100
           minLength: 1
-          type: integer
-          description: Restaurant Rating
-          example: 42
-        lat:
-          type: number
-          description: Restaurant Latitude
-          example: 42.42
-        lon:
-          type: number
-          description: Restaurant Longitude
-          example: 42.42
+          type: string
+          description: User name
+          example: "Adriano"
+        lastname:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: User name
+          example: "Galiani"
+        password:
+          type: string
+          minLength: 5
+          maxLength: 50
+          description: Password of the new user
+          example: "*********"
         phone:
           type: string
           minLength: 5
           maxLength: 50
           description: Restaurant Phone Number
           example: "050123456"
+        dateofbirth:
+          type: string
+          format: date
+          example: "2017-07-21"
+    Result:
+      required:
+        - result
+      type: object
+      properties:
+        result:
+          type: string
+          default: Type of result
+          example: "Ok"
        
   

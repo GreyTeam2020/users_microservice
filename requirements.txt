@@ -1,8 +1,4 @@
 flask
-flask-login
-celery
-redis
-flask-wtf
 flask-sqlalchemy
 pip-tools
 connexion[swagger-ui]
