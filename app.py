@@ -14,8 +14,14 @@ def create_user():
     :return:
     """
     if request.method == "POST":
-        user = UserService.create_user(db_session, request)
-        return {"result": "OK"}, 200
+        try:
+            user = UserService.create_user(db_session, request.get_json())
+        except Exception as ex:
+            return {"result": str(ex.message)}
+        if user is not None:
+            return {"result": "OK"}, 200
+        else:
+            return {"result": "User not created because we have an error on server"}, 500
     return {}, 400
 
 

@@ -1,9 +1,6 @@
-import logging
 from datetime import datetime
-
 from flask import current_app
-
-from database import User, Positive, Role
+from database import User
 
 
 class UserService:
@@ -14,25 +11,54 @@ class UserService:
     """
 
     @staticmethod
-    def create_user(db_session, request, role_id: int = 3):
+    def create_user(db_session, json, role_id: int = 3):
         """
-        :return:
+        This method help to contains the logic of the create user about microservices
+        This bring all information inside a dictionary
+        :param db_session: The actual db session
+        :param json: a python map that contains all information about the user
+        :param role_id: a role id to help chose if the user is operator (2) or customer (3)
+        :raise Generic exception if the user is already present, is used the function user_is_present
+        :return: the user is it is crated
         """
+        email = json["email"]
+        phone = json["phone"]
+
+        user = UserService.user_is_present(db_session, email, phone)
+        if user is not None:
+            ex = Exception()
+            ex.message = "User with email {} or phone {} already present".format(email, phone)
+            raise ex
         new_user = User()
-        new_user.email = request.get_json("email")
+        new_user.email = email
         current_app.logger.debug("Email user: {}".format(new_user.email))
-        new_user.firstname = request.get_json("firstname")
+        new_user.firstname = json["firstname"]
         current_app.logger.debug("First name {}".format(new_user.firstname))
-        new_user.lastname = request.get_json("lastname")
+        new_user.lastname = json["lastname"]
         current_app.logger.debug("Last name {}".format(new_user.lastname))
-        password = request.get_json("password")
+        password = json["password"]
         current_app.logger.debug("User password {}".format(password))
-        new_user.phone = request.get_json("phone")
+        new_user.phone = phone
         current_app.logger.debug("Phone {}".format(new_user.phone))
-        new_user.dateofbirth = datetime.now()
-        #logging.debug("dateofbirth: {}".format(new_user.dateofbirth))
+        date_string = json["dateofbirth"]
+        current_app.logger.debug("date_string: {}".format(date_string))
+        new_user.dateofbirth = datetime.strptime(date_string, "%Y-%m-%d")
+        current_app.logger.debug("dateofbirth: {}".format(new_user.dateofbirth))
         new_user.role_id = role_id
         new_user.set_password(password)
         db_session.add(new_user)
+        db_session.flush()
         db_session.commit()
         return db_session.query(User).filter_by(email=new_user.email)
+
+    @staticmethod
+    def user_is_present(db_session, email: str = None, phone: str = None):
+        """
+        This method contains the logic to search a user with the
+        :param email: user email if it is present we use to filter user
+        :param phone: phone number, if it is present we use to filter user
+        :return: use user if exist otherwise, it is return None
+        """
+        if phone is not None:
+            return db_session.query(User).filter_by(phone=phone).first()
+        return db_session.query(User).filter_by(email=email).first()

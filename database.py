@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import (
     create_engine,
     Column,
@@ -14,7 +16,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db = declarative_base()
-session = None
 
 
 class User(db):
@@ -26,6 +27,7 @@ class User(db):
     lastname = Column(Unicode(128))
     password = Column(Unicode(128))
     dateofbirth = Column(DateTime)
+
     is_active = Column(Boolean, default=True)
     is_admin = Column(Boolean, default=False)
     # user role
@@ -39,7 +41,7 @@ class User(db):
 
     def set_password(self, password):
         # self.password = generate_password_hash(password)
-        password = password
+        self.password = password
 
     def set_role(self, role):
         self.role = role
@@ -82,22 +84,20 @@ def init_db(uri):
     db_session = scoped_session(
         sessionmaker(autocommit=False, autoflush=False, bind=engine)
     )
-    global session
-    session = db_session
     db.query = db_session.query_property()
     db.metadata.create_all(bind=engine)
 
-    q = db_session.query(User).filter_by(id=1)
-    restaurant = q.first()
-    if restaurant is None:
-        first_operator = User()
-        first_operator.firstname = "Ham"
-        first_operator.lastname = "Burger"
-        first_operator.email = "ham.burger@email.com"
-        first_operator.phone = "222333567"
-        first_operator.is_admin = False
-        first_operator.set_password("operator")
-        first_operator.role_id = 2
-        db_session.add(first_operator)
+    q = db_session.query(User).filter(User.email == "john.doe@email.com")
+    user = q.first()
+    if user is None:
+        first_customer = User()
+        first_customer.firstname = "John"
+        first_customer.lastname = "Doe"
+        first_customer.email = "john.doe@email.com"
+        first_customer.phone = "111234765"
+        first_customer.is_admin = False
+        first_customer.set_password("customer")
+        first_customer.role_id = 3
+        db_session.add(first_customer)
         db_session.commit()
     return db_session
