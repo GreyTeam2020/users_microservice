@@ -27,7 +27,7 @@ class Utils:
             "lastname": lastname,
             "password": password,
             "phone": phone,
-            "dateofbirth": "1996-12-12",
+            "dateofbirth": "12/12/1996",
             "email": "{}@gmail.com".format(name),
         }
 

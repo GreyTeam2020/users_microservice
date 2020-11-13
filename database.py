@@ -71,6 +71,8 @@ class Role(db):
     id = Column(Integer, primary_key=True, autoincrement=True)
     value = Column(Text(100))
     label = Column(Text(100))
+    def serialize(self):
+        return dict([(k,v) for k,v in self.__dict__.items() if k[0] != '_'])
 
 
 class Positive(db):
@@ -106,4 +108,27 @@ def init_db(uri):
         db_session.add(first_customer)
         db_session.commit()
     """
+
+    # create the user roles
+    q = db_session.query(Role).filter(Role.id == 1)
+    role = q.first()
+    if role is None:
+        role = Role()
+        role.value = "ADMIN"
+        role.label = "Admin role"
+        db_session.add(role)
+        role = Role()
+        role.value = "OPERATOR"
+        role.label = "Operator role"
+        db_session.add(role)
+        role = Role()
+        role.value = "CUSTOMER"
+        role.label = "Customer role"
+        db_session.add(role)
+        role = Role()
+        role.value = "HEALTH"
+        role.label = "Health role"
+        db_session.add(role)
+        db_session.commit()
+
     return db_session

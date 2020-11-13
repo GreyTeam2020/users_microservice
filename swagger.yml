@@ -56,6 +56,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
+        404:
+          description: "user not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
         400:
           description: "Resource don't found"
           content:
@@ -79,14 +86,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserWithRole'
+              $ref: '#/components/schemas/LogIn'
       responses:
         200:
           description: "The operation is done"
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Result'
+                $ref: '#/components/schemas/User'
         400:
           description: "Resource don't found"
           content:
@@ -169,6 +176,34 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
+
+  /role/{role_id}:
+    get:
+      tags:
+        - Role
+      summary: get Role value
+      operationId: app.get_role_by_id
+      parameters:
+        - in: path
+          name: role_id
+          schema:
+            type: integer
+          required: true
+          description: The role ID
+      responses:
+        200:
+          description: "Role is returned"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        404:
+          description: "Role not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+
 components:
   schemas:
     User:
@@ -274,5 +309,49 @@ components:
           type: string
           default: Type of result
           example: "Message to describe what happen on server"
-       
+    LogIn:
+      required:
+        - email
+        - password
+      type: object
+      properties:
+        email:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: User email
+          example: "adriano@gmail.com"
+        password:
+          type: string
+          format: password
+          minLength: 5
+          maxLength: 50
+          description: Password of the new user
+          example: "*********"
+
+    Role:
+      required:
+        - id
+        - value
+        - label
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique identifier
+          readOnly: true
+          example: 123
+        value:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Role value
+          example: "ADMIN"
+        label:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: Role label
+          example: "admin role"
+
   

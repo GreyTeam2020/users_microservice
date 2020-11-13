@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from database import User
+from database import User, Role
 
 
 class UserService:
@@ -35,7 +35,7 @@ class UserService:
         logging.debug("Phone {}".format(new_user.phone))
         date_string = json["dateofbirth"]
         logging.debug("date_string: {}".format(date_string))
-        new_user.dateofbirth = datetime.strptime(date_string, "%Y-%m-%d")
+        new_user.dateofbirth = datetime.strptime(date_string, "%d/%m/%Y")
         logging.debug("dateofbirth: {}".format(new_user.dateofbirth))
         new_user.role_id = role_id
         db_session.add(new_user)
@@ -98,7 +98,7 @@ class UserService:
         user.email = json["email"]
         user.firstname = json["firstname"]
         user.lastname = json["lastname"]
-        user.dateofbirth = datetime.strptime(date_string, "%Y-%m-%d")
+        user.dateofbirth = datetime.strptime(date_string, "%d/%m/%Y")
         user.role_id = json["role"]
         db_session.commit()
         return db_session.query(User).filter_by(email=email).first()
@@ -111,3 +111,7 @@ class UserService:
         db_session.query(User).filter_by(id=user_id).delete()
         db_session.commit()
         return True
+
+    @staticmethod
+    def get_role_value(db_session, role_id):
+        return db_session.query(Role).filter_by(id=role_id).first()

@@ -1,5 +1,5 @@
 from services import UserService
-from database import User
+from database import User, Role
 from utils import Utils
 
 
@@ -23,7 +23,7 @@ class Test_UserServices:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "100023",
-            "dateofbirth": "1996-12-12",
+            "dateofbirth": "12/12/1996",
             "email": "alibaba@alibaba.it",
         }
         user = UserService.create_user(db, json)
@@ -46,7 +46,7 @@ class Test_UserServices:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "345432234",
-            "dateofbirth": "1996-12-12",
+            "dateofbirth": "12/12/1996",
             "email": "alibaba@alibaba.com",
         }
         user = UserService.create_user(db, json, 2)
@@ -71,7 +71,7 @@ class Test_UserServices:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "345432234",
-            "dateofbirth": "1996-12-12",
+            "dateofbirth": "12/12/1996",
             "email": "alibaba@alibaba.com",
         }
         user = UserService.create_user(db, json, 2)
@@ -98,7 +98,7 @@ class Test_UserServices:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "345432234",
-            "dateofbirth": "1996-12-12",
+            "dateofbirth": "12/12/1996",
             "email": "alibaba@alibaba.com",
         }
         user = UserService.create_user(db, json, 2)
@@ -218,3 +218,21 @@ class Test_UserServices:
         user = Utils.get_user_on_db_with_email(db, user.email)
         assert user is not None
 
+    def test_get_role(self, db):
+        """
+        This function contains the code to test the
+        user service tha allows to retetrive the role with id given
+        :param db: database session
+        """
+        last_role = db.query(Role).order_by(Role.id.desc()).first()
+        role = Role()
+        role.value = "CAMALEONTE"
+        role.label = "CAMALEONTE"
+        db.add(role)
+        db.commit()
+
+        role = UserService.get_role_value(db, last_role.id + 1)
+        assert role.value == "CAMALEONTE"
+
+        db.query(Role).filter_by(id = role.id).delete()
+        db.commit()

@@ -119,11 +119,16 @@ def login_user():
         )
         if user is None:
             return _get_response(
-                "User with email {} not present".format(json["email"]), 400
+                "User with email {} not present".format(json["email"]), 404
             )
-        return _get_response(user.serialize(), 200)
+        return user.serialize(), 200
     return _get_response("Resource not found", 400)
 
+def get_role_by_id(role_id):
+    role = UserService.get_role_value(db_session,role_id)
+    if role is None:
+        return _get_response("Role not found", 404)
+    return role.serialize()
 
 # --------- END API definition --------------------------
 logging.basicConfig(level=logging.DEBUG)
