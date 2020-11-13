@@ -106,7 +106,7 @@ class UserService:
     @staticmethod
     def delete_user(db_session, user_id: int):
         user = db_session.query(User).filter_by(id=user_id).first()
-        if user.is_authenticated() is False:
+        if user.is_authenticated is False:
             return False
         db_session.query(User).filter_by(id=user_id).delete()
         db_session.commit()
