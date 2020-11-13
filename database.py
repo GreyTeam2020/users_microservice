@@ -40,8 +40,7 @@ class User(db):
         self._authenticated = False
 
     def set_password(self, password):
-        # self.password = generate_password_hash(password)
-        self.password = password
+        self.password = generate_password_hash(password)
 
     def set_role(self, role):
         self.role = role
