@@ -56,3 +56,78 @@ class Test_UserServices:
 
         db.query(User).filter_by(id=user.id).delete()
         db.commit()
+
+
+    def test_user_is_present_by_email(self, db):
+        """
+        This test try to test the simple operation to create a new operator
+
+         Test flow:
+         - Make the JSON object with the correct data
+         - user the UserService to share the request
+         - clean DB
+        """
+        json = {
+            "firstname": "Vincenzo",
+            "lastname": "Palazzo",
+            "password": "Alibaba",
+            "phone": "345432234",
+            "dateofbirth": "1996-12-12",
+            "email": "alibaba@alibaba.com",
+        }
+        user = UserService.create_user(db, json, 2)
+        assert user is not None
+        assert user.role_id is not 3
+        assert user.role_id is 2
+
+        user = UserService.user_is_present(db, json["email"])
+        assert user is not None
+
+        Utils.del_user_on_db_with_id(db, user.id)
+
+    def test_user_is_present_by_phone(self, db):
+        """
+        This test try to test the simple operation to create a new operator
+
+         Test flow:
+         - Make the JSON object with the correct data
+         - user the UserService to share the request
+         - clean DB
+        """
+        json = {
+            "firstname": "Vincenzo",
+            "lastname": "Palazzo",
+            "password": "Alibaba",
+            "phone": "345432234",
+            "dateofbirth": "1996-12-12",
+            "email": "alibaba@alibaba.com",
+        }
+        user = UserService.create_user(db, json, 2)
+        assert user is not None
+        assert user.role_id is not 3
+        assert user.role_id is 2
+
+        user = UserService.user_is_present(db, phone=json["phone"])
+        assert user is not None
+
+        Utils.del_user_on_db_with_id(db, user.id)
+
+    def test_user_is_present_not_present(self, db):
+        """
+        This test try to test the simple operation to create a new operator
+
+         Test flow:
+         - Make the JSON object with the correct data
+         - user the UserService to share the request
+         - clean DB
+        """
+        json = {
+            "firstname": "Vincenzo",
+            "lastname": "Palazzo",
+            "password": "Alibaba",
+            "phone": "345432234",
+            "dateofbirth": "1996-12-12",
+            "email": "alibaba@alibaba.com",
+        }
+        user = UserService.user_is_present(db, phone=json["phone"])
+        assert user is None

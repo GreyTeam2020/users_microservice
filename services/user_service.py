@@ -51,6 +51,6 @@ class UserService:
         :param phone: phone number, if it is present we use to filter user
         :return: use user if exist otherwise, it is return None
         """
-        if phone is not None or len(phone) == 0:
+        if phone is not None and len(phone) != 0:
             return db_session.query(User).filter_by(phone=phone).first()
         return db_session.query(User).filter_by(email=email).first()
