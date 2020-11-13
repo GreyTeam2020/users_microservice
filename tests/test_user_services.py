@@ -57,7 +57,6 @@ class Test_UserServices:
         db.query(User).filter_by(id=user.id).delete()
         db.commit()
 
-
     def test_user_is_present_by_email(self, db):
         """
         This test try to test the simple operation to create a new operator
@@ -121,13 +120,101 @@ class Test_UserServices:
          - user the UserService to share the request
          - clean DB
         """
-        json = {
-            "firstname": "Vincenzo",
-            "lastname": "Palazzo",
-            "password": "Alibaba",
-            "phone": "345432234",
-            "dateofbirth": "1996-12-12",
-            "email": "alibaba@alibaba.com",
-        }
+        json = Utils.get_json_about_new_user()
         user = UserService.user_is_present(db, phone=json["phone"])
         assert user is None
+
+    def test_user_login_ok(self, db):
+        """
+        This function contains the code to test the
+        User services about the login, and I will aspect a good result.
+        :param db: database session
+        """
+        json = Utils.get_json_about_new_user()
+        user = UserService.create_user(db, json)
+        assert user is not None
+        assert user.role_id is 3
+
+        user = UserService.user_login(db, user.email, json["password"])
+        assert user is not None
+        assert user.is_authenticated is True
+
+        Utils.del_user_on_db_with_id(db, user.id)
+
+    def test_user_login_ko(self, db):
+        """
+        This function contains the code to test the
+        User services about the login, and I will aspect a good result.
+        :param db: database session
+        """
+        json = Utils.get_json_about_new_user()
+
+        user = UserService.user_login(db, json["email"], json["password"])
+        assert user is None
+
+    def test_user_modify_ok(self, db):
+        """
+        This function contains the code to test the
+        User services about the login, and I will aspect a good result.
+        :param db: database session
+        """
+        json = Utils.get_json_about_new_user()
+        user = UserService.create_user(db, json)
+        assert user is not None
+        assert user.role_id is 3
+
+        user = UserService.user_login(db, json["email"], json["password"])
+
+        json["firstname"] = "Bart"
+        json["role"] = user.role_id
+        user = UserService.modify_user(db, json, user.id)
+        assert user is not None
+        assert user.firstname == "Bart"
+        Utils.del_user_on_db_with_id(db, user.id)
+
+    def test_user_modify_ko(self, db):
+        """
+        This function contains the code to test the
+        User services about the login, and I will aspect a good result.
+        :param db: database session
+        """
+        json = Utils.get_json_about_new_user()
+        json["role"] = 3
+        json["firstname"] = "Bart"
+        user = UserService.modify_user(db, json, 1)
+        assert user is None
+
+    def test_user_delete_ok(self, db):
+        """
+        This function contains the code to test the
+        User services about the login, and I will aspect a good result.
+        :param db: database session
+        """
+        json = Utils.get_json_about_new_user()
+        user = UserService.create_user(db, json)
+        assert user is not None
+        assert user.role_id is 3
+        user = UserService.user_login(db, user.email, json["password"])
+        is_delete = UserService.delete_user(db, user.id)
+        assert is_delete is True
+        
+        user = Utils.get_user_on_db_with_email(db, user.email)
+        assert user is None
+
+    def test_user_delete_ko(self, db):
+        """
+        This function contains the code to test the
+        User services about the login, and I will aspect a good result.
+        :param db: database session
+        """
+        json = Utils.get_json_about_new_user()
+        user = UserService.create_user(db, json)
+        assert user is not None
+        assert user.role_id is 3
+
+        is_delete = UserService.delete_user(db, user.id)
+        assert is_delete is False
+
+        user = Utils.get_user_on_db_with_email(db, user.email)
+        assert user is not None
+

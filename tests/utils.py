@@ -1,3 +1,5 @@
+from random import randrange
+
 from database import User
 
 
@@ -6,6 +8,28 @@ class Utils:
     This class contains all logic to implement the client request
     to make a simple component test.
     """
+
+    @staticmethod
+    def get_json_about_new_user(name: str = "user_{}".format(randrange(100000)),
+                                lastname: str = "user_{}".format(randrange(100000)),
+                                password: str = "pass_{}".format(randrange(100000)), 
+                                phone: str = "349{}".format(randrange(100000))):
+        """
+        This method return the json about the new user
+        :param name: name user (optional)
+        :param lastname: lastname user (option)
+        :param password: password (optional)
+        :param phone: phone (optional)
+        :return: python map with data about the new user
+        """
+        return {
+            "firstname": name,
+            "lastname": lastname,
+            "password": password,
+            "phone": phone,
+            "dateofbirth": "1996-12-12",
+            "email": "{}@gmail.com".format(name),
+        }
 
     @staticmethod
     def register_user(client, json_data, role_id: int):

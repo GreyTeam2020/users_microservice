@@ -1,14 +1,14 @@
 import connexion
 from database import init_db
 import logging
-from flask import request, jsonify
+from flask import request, jsonify, current_app
 from services.user_service import UserService
 
 
 db_session = None
 
 
-def _get_response(message: str, code: int) -> None:
+def _get_response(message: str, code: int):
     """
     This method contains the code to make a new response for flask view
     :param message: Message response
@@ -76,7 +76,16 @@ def modify_user(id):
     This API method contains the logic to modify a new user
     :return: the correct response that looks like {"result": "OK"}, 200
     """
-    pass
+    json = request.get_json()
+    current_app.logger.debug("Modify user with id {}".format(id))
+    current_app.logger.debug("Request content \n{}".format(json))
+    if request.method == "PUT":
+        user = UserService.modify_user(db_session, json, id)
+        current_app.logger.debug(
+            "User after modify operation \n{}".format(user.serialize())
+        )
+        return _get_response(user.serialize(), 200)
+    return _get_response("Resource not found", 400)
 
 
 def delete_user(id):
@@ -84,7 +93,18 @@ def delete_user(id):
     This API method contains the logic to delete a user on database
     :return: the correct response that looks like {"result": "OK"}, 200
     """
-    pass
+    if request.method == "DELETE":
+        user = UserService.user_is_present_with_id(db_session, id)
+        if user is None:
+            current_app.logger.warn(
+                "The user with id {} doesn't exist, I can not delete it".format(id)
+            )
+            return _get_response("User not exist", 500)
+        if UserService.delete_user(db_session, id):
+            return _get_response("OK", 200)
+        else:
+            return _get_response("User unauthenticated", 500)
+    return _get_response("Resource not found", 400)
 
 
 def login_user():
@@ -92,10 +112,21 @@ def login_user():
     This API method contains the logic authenticate the user
     :return: the correct response contains the user with id role
     """
-    pass
+    if request.method == "POST":
+        json = request.get_json()
+        user = UserService.user_login(
+            db_session, email=json["email"], password=json["password"]
+        )
+        if user is None:
+            return _get_response(
+                "User with email {} not present".format(json["email"]), 400
+            )
+        return _get_response(user.serialize(), 200)
+    return _get_response("Resource not found", 400)
+
 
 # --------- END API definition --------------------------
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 db_session = init_db("sqlite:///user.db")
 app = connexion.App(__name__)
 app.add_api("swagger.yml")
