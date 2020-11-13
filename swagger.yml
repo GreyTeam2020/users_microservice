@@ -6,11 +6,11 @@ info:
 servers:
 - url: /
 paths:
-  /create_user:
+  /user/create_user:
     post:
       tags:
         - User
-      summary: Create a new user.
+      summary: Create a new customer for the application.
       operationId: app.create_user
       requestBody:
         required: true
@@ -21,6 +21,138 @@ paths:
       responses:
         200:
           description: "The operation is gone"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        500:
+          description: "The code returned if there is some error on server, e.g: user already exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /user/create_operator:
+    post:
+      tags:
+        - User
+      summary: Create a new operator for the application to managed a new restaurants.
+      operationId: app.create_operator
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        500:
+          description: "The code returned if there is some error on server, e.g: user already exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /user/login:
+    post:
+      tags:
+        - User
+      summary: From email and password it does the login and return the user data.
+      operationId: app.login_user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserWithRole'
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        500:
+          description: "The code returned if there is some error on server, e.g: user already exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /user/data/{id}:
+    put:
+      tags:
+        - User
+      summary: Update the user data.
+      operationId: app.modify_user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The user ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserWithRole'
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        500:
+          description: "The code returned if there is some error on server, e.g: user already exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /user/delete/{id}:
+    delete:
+      tags:
+        - User
+      summary: Update the user data.
+      operationId: app.delete_user
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: The user ID
+      responses:
+        200:
+          description: "The operation is done"
           content:
             application/json:
               schema:
@@ -84,6 +216,55 @@ components:
           type: string
           format: date
           example: "2017-07-21"
+    UserWithRole:
+      required:
+        - email
+        - firstname
+        - lastname
+        - password
+        - phone
+        - dateofbirth
+        - role
+      type: object
+      properties:
+        email:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: User email
+          example: "adriano@gmail.com"
+        firstname:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: User name
+          example: "Adriano"
+        lastname:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: User name
+          example: "Galiani"
+        password:
+          type: string
+          format: password
+          minLength: 5
+          maxLength: 50
+          description: Password of the new user
+          example: "*********"
+        phone:
+          type: string
+          minLength: 5
+          maxLength: 50
+          description: Restaurant Phone Number
+          example: "050123456"
+        dateofbirth:
+          type: string
+          format: date
+          example: "2017-07-21"
+        role:
+          type: integer
+          example: "2"
     Result:
       required:
         - result

@@ -1,4 +1,5 @@
 # User services
+![Travis (.com)](https://img.shields.io/travis/com/GreyTeam2020/users_microservice?style=for-the-badge)
 
 ## Table of content
 

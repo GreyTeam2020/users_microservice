@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import logging
 from sqlalchemy import (
     create_engine,
     Column,
@@ -25,38 +25,43 @@ class User(db):
     phone = Column(Unicode(16), nullable=False, unique=True)
     firstname = Column(Unicode(128))
     lastname = Column(Unicode(128))
-    password = Column(Unicode(128))
+    _password = Column(Unicode(128))
     dateofbirth = Column(DateTime)
 
-    is_active = Column(Boolean, default=True)
-    is_admin = Column(Boolean, default=False)
+    _is_active = Column(Boolean, default=True)
+    _is_admin = Column(Boolean, default=False)
     # user role
     role_id = Column(Integer, ForeignKey("role.id"))
     restaurant = relationship("Role", foreign_keys="User.role_id")
-    is_anonymous = False
+    _is_anonymous = False
 
     def __init__(self, *args, **kw):
         super(User, self).__init__(*args, **kw)
         self._authenticated = False
 
     def set_password(self, password):
-        # self.password = generate_password_hash(password)
-        self.password = password
+        self._password = generate_password_hash(password)
+        logging.debug("Pass wit hash {}".format(self._password))
 
     def set_role(self, role):
-        self.role = role
+        self._role = role
 
     @property
     def is_authenticated(self):
         return self._authenticated
 
     def authenticate(self, password):
-        checked = check_password_hash(self.password, password)
+        logging.debug("Pass before check {}".format(password))
+        checked = check_password_hash(self._password, password)
         self._authenticated = checked
+        logging.debug("Pass after check {}".format(checked))
         return self._authenticated
 
     def get_id(self):
         return self.id
+
+    def serialize(self):
+        return dict([(k,v) for k,v in self.__dict__.items() if k[0] != '_'])
 
 
 class Role(db):
@@ -80,13 +85,13 @@ class Positive(db):
 
 
 def init_db(uri):
-    engine = create_engine(uri, convert_unicode=True)
+    engine = create_engine(uri)
     db_session = scoped_session(
         sessionmaker(autocommit=False, autoflush=False, bind=engine)
     )
     db.query = db_session.query_property()
     db.metadata.create_all(bind=engine)
-
+    """
     q = db_session.query(User).filter(User.email == "john.doe@email.com")
     user = q.first()
     if user is None:
@@ -100,4 +105,5 @@ def init_db(uri):
         first_customer.role_id = 3
         db_session.add(first_customer)
         db_session.commit()
+    """
     return db_session
