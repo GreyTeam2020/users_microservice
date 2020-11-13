@@ -54,3 +54,26 @@ class UserService:
         if phone is not None and len(phone) != 0:
             return db_session.query(User).filter_by(phone=phone).first()
         return db_session.query(User).filter_by(email=email).first()
+
+    @staticmethod
+    def modify_user(db_session, json, role_id: int):
+        """
+        This method take an user that is populate from te caller
+        and make the operation to store it as persistent (e.g database).
+        We can assume that by default is not possible change the password
+        :param form: the user form with new data
+        :param role_id: by default is none but it is possible setup to change also the role id
+        :return: the user with the change if is changed
+        """
+        email = json["email"]
+        db_session.query(User).filter_by(email=email).update(
+            {
+                "email": json["email"],
+                "firstname": json["firstname"],
+                "lastname": json["lastname"],
+                "dateofbirth": json["dateofbirth"],
+                "role_id": role_id,
+            }
+        )
+        db_session.commit()
+        return db_session.query(User).filter_by(email=email).first()

@@ -68,6 +68,68 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
+  /user/data:
+    put:
+      tags:
+        - User
+      summary: Update the user data.
+      operationId: app.modify_user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserWithRole'
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        500:
+          description: "The code returned if there is some error on server, e.g: user already exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /user/delete:
+    post:
+      tags:
+        - User
+      summary: Update the user data.
+      operationId: app.delete_user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserWithRole'
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        500:
+          description: "The code returned if there is some error on server, e.g: user already exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
 components:
   schemas:
     User:
@@ -115,6 +177,55 @@ components:
           type: string
           format: date
           example: "2017-07-21"
+    UserWithRole:
+      required:
+        - email
+        - firstname
+        - lastname
+        - password
+        - phone
+        - dateofbirth
+        - role
+      type: object
+      properties:
+        email:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: User email
+          example: "adriano@gmail.com"
+        firstname:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: User name
+          example: "Adriano"
+        lastname:
+          maxLength: 100
+          minLength: 1
+          type: string
+          description: User name
+          example: "Galiani"
+        password:
+          type: string
+          format: password
+          minLength: 5
+          maxLength: 50
+          description: Password of the new user
+          example: "*********"
+        phone:
+          type: string
+          minLength: 5
+          maxLength: 50
+          description: Restaurant Phone Number
+          example: "050123456"
+        dateofbirth:
+          type: string
+          format: date
+          example: "2017-07-21"
+        role:
+          type: integer
+          example: "2"
     Result:
       required:
         - result

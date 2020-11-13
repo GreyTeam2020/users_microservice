@@ -71,6 +71,23 @@ def create_operator():
     return _get_response("Resource not found", 400)
 
 
+def modify_user():
+    """
+    This API method contains the logic to modify a new user
+    :return: the correct response that looks like {"result": "OK"}, 200
+    """
+    pass
+
+
+def delete_user():
+    """
+    This API method contains the logic to modify a new user
+    :return: the correct response that looks like {"result": "OK"}, 200
+    """
+    pass
+
+# --------- END API definition --------------------------
+
 logging.basicConfig(level=logging.INFO)
 db_session = init_db("sqlite:///user.db")
 app = connexion.App(__name__)
