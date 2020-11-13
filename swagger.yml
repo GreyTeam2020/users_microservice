@@ -1,7 +1,7 @@
 openapi: 3.0.1
 info:
-  title: Restaurants Service API
-  description: Restaurants from GoOutSafe with Microservices
+  title: User Service API
+  description: Users from GoOutSafe with Microservices
   version: "0.1"
 servers:
 - url: /
@@ -20,7 +20,19 @@ paths:
               $ref: '#/components/schemas/User'
       responses:
         200:
-          description: OK
+          description: "The operation is gone"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        500:
+          description: "The code returned if there is some error on server, e.g: user already exist"
           content:
             application/json:
               schema:
@@ -42,7 +54,7 @@ components:
           minLength: 1
           type: string
           description: User email
-          example: "adriani@gmail.com"
+          example: "adriano@gmail.com"
         firstname:
           maxLength: 100
           minLength: 1
@@ -70,8 +82,8 @@ components:
           example: "050123456"
         dateofbirth:
           type: string
-          format: date-time
-          example: "2017-07-21T17:32:28Z"
+          format: date
+          example: "2017-07-21"
     Result:
       required:
         - result
@@ -80,6 +92,6 @@ components:
         result:
           type: string
           default: Type of result
-          example: "Ok"
+          example: "Message to describe what happen on server"
        
   

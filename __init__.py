@@ -1,2 +1,2 @@
-from .database import User, session, init_db
-from .forms import UserForm
+from .database import User, init_db
+from .app import db_session
