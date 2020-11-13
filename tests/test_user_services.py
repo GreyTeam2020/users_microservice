@@ -1,5 +1,6 @@
 from services import UserService
 from database import User
+from utils import Utils
 
 
 class Test_UserServices:
@@ -8,10 +9,14 @@ class Test_UserServices:
     All the code tested inside this class is inside the services/test_user_services.py
     """
 
-    def test_create_user(self, db):
+    def test_create_customer(self, db):
         """
-        test create user
-        :return:
+        This test try to test the simple operation to create a new operator
+
+         Test flow:
+         - Make the JSON object with the correct data
+         - user the UserService to share the request
+         - clean DB
         """
         json = {
             "firstname": "Vincenzo",
@@ -25,13 +30,16 @@ class Test_UserServices:
         assert user is not None
         assert user.role_id is 3
 
-        db.query(User).filter_by(id=user.id).delete()
-        db.commit()
+        Utils.del_user_on_db_with_id(db, user.id)
 
-    def test_create_customer(self, db):
+    def test_create_operator(self, db):
         """
-        test create user
-        :return:
+        This test try to test the simple operation to create a new operator
+
+         Test flow:
+         - Make the JSON object with the correct data
+         - user the UserService to share the request
+         - clean DB
         """
         json = {
             "firstname": "Vincenzo",

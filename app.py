@@ -7,6 +7,7 @@ from services.user_service import UserService
 
 db_session = None
 
+
 def _get_response(message: str, code: int) -> None:
     """
     This method contains the code to make a new response for flask view
@@ -16,9 +17,12 @@ def _get_response(message: str, code: int) -> None:
     """
     return {"result": message}, code
 
+
 def create_user():
     """
-    TODO
+    This flask method give the possibility to create a new customer
+    with a json request
+    :return: the correct response that looks like {"result": "OK"}, 200
     :return:
     """
     if request.method == "POST":
@@ -27,12 +31,43 @@ def create_user():
         phone = json["phone"]
         user = UserService.user_is_present(db_session, email, phone)
         if user is not None:
-            return _get_response("User with email {} and/or phone already exist".format(email, phone), 500)
+            return _get_response(
+                "User with email {} and/or phone already exist".format(email, phone),
+                500,
+            )
         user = UserService.create_user(db_session, json)
         if user is not None:
             return _get_response("OK", 200)
         else:
-            return _get_response("User not created because we have an error on server", 500)
+            return _get_response(
+                "User not created because we have an error on server", 500
+            )
+    return _get_response("Resource not found", 400)
+
+
+def create_operator():
+    """
+    This flask method give the possibility to create a new operator
+    with a json request
+    :return: the correct response that looks like {"result": "OK"}, 200
+    """
+    if request.method == "POST":
+        json = request.get_json()
+        email = json["email"]
+        phone = json["phone"]
+        user = UserService.user_is_present(db_session, email, phone)
+        if user is not None:
+            return _get_response(
+                "User with email {} and/or phone already exist".format(email, phone),
+                500,
+            )
+        user = UserService.create_user(db_session, json, 3)
+        if user is not None:
+            return _get_response("OK", 200)
+        else:
+            return _get_response(
+                "User not created because we have an error on server", 500
+            )
     return _get_response("Resource not found", 400)
 
 
