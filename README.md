@@ -1,5 +1,5 @@
 # User services
-![Travis (.com)](https://img.shields.io/travis/com/GreyTeam2020/users_microservice?style=for-the-badge)
+[![Build Status](https://travis-ci.com/GreyTeam2020/users_microservice.svg?token=sy94HsRanu5mrpdsRQbH&branch=main)](https://travis-ci.com/GreyTeam2020/users_microservice)
 
 ## Table of content
 

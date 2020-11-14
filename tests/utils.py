@@ -1,6 +1,7 @@
 from random import randrange
 
 from database import User
+from services import UserService
 
 
 class Utils:
@@ -8,6 +9,12 @@ class Utils:
     This class contains all logic to implement the client request
     to make a simple component test.
     """
+
+    @staticmethod
+    def reproduce_json_response(message: str, is_custom_obj: bool = False):
+        if is_custom_obj is False:
+            return {"result": message}
+        return message
 
     @staticmethod
     def get_json_about_new_user(
@@ -48,6 +55,36 @@ class Utils:
         return client.post("/user/create_user", json=json_data, follow_redirects=True)
 
     @staticmethod
+    def login_user(client, json_data):
+        """
+        This method perform the request to register a new user
+        :param client: Is a flask app created inside the fixtures
+        :param user: Is the User form populate with the mock data
+        :return: response from URL "/user/create_user"
+        """
+        return client.post("/user/login", json=json_data, follow_redirects=True)
+
+    @staticmethod
+    def modify_user(client, json_data):
+        """
+        This method perform the request to register a new user
+        :param client: Is a flask app created inside the fixtures
+        :param user: Is the User form populate with the mock data
+        :return: response from URL "/user/data{id}"
+        """
+        return client.put("/user/data/", json=json_data, follow_redirects=True)
+
+    @staticmethod
+    def delete_user(client, id):
+        """
+        This method perform the request to register a new user
+        :param client: Is a flask app created inside the fixtures
+        :param user: Is the User form populate with the mock data
+        :return: response from URL "/user/data{id}"
+        """
+        return client.delete("/user/delete/{}".format(id), follow_redirects=True)
+
+    @staticmethod
     def del_user_on_db_with_id(db_session, user_id: int):
         """
         This method contains the code to delete a user on database with id
@@ -75,3 +112,17 @@ class Utils:
         :param user_id: user id
         """
         return db_session.query(User).filter_by(email=email_user).first()
+
+# --------------------------- UTil function to make operation with Database --------------------------
+
+    @staticmethod
+    def create_user_on_db(db_session, ran: int = randrange(100000)):
+        json = {
+            "firstname": "User_{}".format(ran),
+            "lastname": "user_{}".format(ran),
+            "password": "Alibaba{}".format(ran),
+            "phone": "1234562344{}".format(ran),
+            "dateofbirth": "12/12/2000",
+            "email": "alibaba{}@alibaba.com".format(str(ran)),
+        }
+        return UserService.create_user(db_session, json)

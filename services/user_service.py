@@ -80,7 +80,7 @@ class UserService:
         return None
 
     @staticmethod
-    def modify_user(db_session, json, user_id: id):
+    def modify_user(db_session, json):
         """
         This method take an user that is populate from te caller
         and make the operation to store it as persistent (e.g database).
@@ -92,6 +92,7 @@ class UserService:
         email = json["email"]
         date_string = json["dateofbirth"]
         logging.debug("date_string: {}".format(date_string))
+        user_id = json["id"]
         user = db_session.query(User).filter_by(id=user_id).first()
         if user is None:
             return None

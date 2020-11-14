@@ -1,5 +1,5 @@
 from utils import Utils
-
+from services import UserService
 
 class Test_Components:
     """
@@ -27,8 +27,9 @@ class Test_Components:
             "email": "alibaba@alibaba.it",
         }
         response = Utils.register_user(client, json, 3)
+        aspected_response = Utils.reproduce_json_response("OK")
         assert response.status_code == 200
-        assert "OK" in response.data.decode("utf-8")
+        assert aspected_response["result"] in response.data.decode("utf-8")
 
         Utils.del_user_on_db_with_email(db, json["email"])
         user = Utils.get_user_on_db_with_email(db, json["email"])
@@ -85,3 +86,170 @@ class Test_Components:
         assert response.status_code == 500
 
         Utils.del_user_on_db_with_email(db, json["email"])
+
+    def test_login_user_ok(self, client, db):
+        """
+        This function test the perform the  request to login the user
+        :param client: flask test client
+        :param db: database session
+        """
+        json_create = {
+            "firstname": "Vincenzo",
+            "lastname": "Palazzo",
+            "password": "Alibaba",
+            "phone": "100023",
+            "dateofbirth": "12/12/1996",
+            "email": "alibaba@alibaba.it",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+
+        json_login = {
+            "email": json_create["email"],
+            "password": json_create["password"],
+        }
+        response = Utils.login_user(client, json_login)
+        user = Utils.get_user_on_db_with_email(db, json_create["email"])
+        assert response.status_code == 200
+        assert user.email in response.data.decode("utf-8")
+
+        Utils.del_user_on_db_with_id(db, user.id)
+        user = Utils.get_user_on_db_with_email(db, json_create["email"])
+        assert user is None
+
+    def test_login_user_ko(self, client, db):
+        """
+        This function test the perform the  request to login the user
+        :param client: flask test client
+        :param db: database session
+        """
+        json_login = {
+            "email": "home@gmail.com",
+            "password": "alibaba",
+        }
+        response = Utils.login_user(client, json_login)
+        assert response.status_code == 404
+        assert "User with email {} not present".format(json_login["email"]) in response.data.decode("utf-8")
+
+        user = Utils.get_user_on_db_with_email(db, json_login["email"])
+        assert user is None
+
+    def test_modify_user_ok(self, client, db):
+        """
+        This test method perform the request to modify the user
+        :param client: flask test client
+        :param db: database session
+        """
+        json = {
+            "firstname": "Bart",
+            "lastname": "Simpson",
+            "password": "Alibaba",
+            "phone": "100023",
+            "dateofbirth": "12/12/1996",
+            "email": "alibaba@alibaba.it",
+        }
+        user = UserService.create_user(db, json)
+        assert user is not None
+
+        json["firstname"] = "Homer"
+        json["role"] = user.role_id
+        json["id"] = user.id
+
+        response = Utils.modify_user(client, json)
+        user = Utils.get_user_on_db_with_email(db, json["email"])
+        assert response.status_code == 200
+        assert "Homer" in response.data.decode("utf-8")
+        assert "Bart" not in response.data.decode("utf-8")
+
+        Utils.del_user_on_db_with_id(db, user.id)
+        user = Utils.get_user_on_db_with_email(db, json["email"])
+        assert user is None
+
+    def test_modify_user_ko(self, client, db):
+        """
+        This test method perform the request to modify the user
+        :param client: flask test client
+        :param db: database session
+        """
+        json = {
+            "firstname": "Bart",
+            "lastname": "Simpson",
+            "password": "Alibaba",
+            "phone": "100023",
+            "dateofbirth": "12/12/1996",
+            "email": "alibaba@alibaba.it",
+        }
+        json["role"] = 3
+        json["id"] = 1
+
+        response = Utils.modify_user(client, json)
+        assert response.status_code == 404
+        assert "Resource not found" in response.data.decode("utf-8")
+
+        user = Utils.get_user_on_db_with_email(db, json["email"])
+        assert user is None
+
+    def test_delete_user_ok(self, client, db):
+        """
+        This test method perform the request to modify the user
+        :param client: flask test client
+        :param db: database session
+        """
+        json = {
+            "firstname": "Bart",
+            "lastname": "Simpson",
+            "password": "Alibaba",
+            "phone": "100023",
+            "dateofbirth": "12/12/1996",
+            "email": "alibaba@alibaba.it",
+        }
+        user = UserService.create_user(db, json)
+        assert user is not None
+
+        json_login = {
+            "email": json["email"],
+            "password": json["password"],
+        }
+        response = Utils.login_user(client, json_login)
+
+        response = Utils.delete_user(client, user.id)
+        assert response.status_code == 200
+        assert "OK" in response.data.decode("utf-8")
+
+        user = Utils.get_user_on_db_with_email(db, json["email"])
+        assert user is None
+
+    def test_delete_user_ko_no_logged(self, client, db):
+        """
+        This test method perform the request to modify the user
+        :param client: flask test client
+        :param db: database session
+        """
+        json = {
+            "firstname": "Bart",
+            "lastname": "Simpson",
+            "password": "Alibaba",
+            "phone": "100023",
+            "dateofbirth": "12/12/1996",
+            "email": "alibaba@alibaba.it",
+        }
+        user = UserService.create_user(db, json)
+        assert user is not None
+
+        response = Utils.delete_user(client, user.id)
+        assert response.status_code == 500
+        assert "User unauthenticated" in response.data.decode("utf-8")
+
+        Utils.del_user_on_db_with_id(db, user.id)
+        user = Utils.get_user_on_db_with_email(db, json["email"])
+        assert user is None
+
+    def test_delete_user_ko(self, client, db):
+        """
+        This test method perform the request to modify the user
+        :param client: flask test client
+        :param db: database session
+        """
+        response = Utils.delete_user(client, 1)
+        assert response.status_code == 404
+        assert "User doesn't exist" in response.data.decode("utf-8")
