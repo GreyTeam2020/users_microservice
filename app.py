@@ -61,7 +61,7 @@ def create_operator():
                 "User with email {} and/or phone already exist".format(email, phone),
                 500,
             )
-        user = UserService.create_user(db_session, json, 3)
+        user = UserService.create_user(db_session, json, 2)
         if user is not None:
             return _get_response("OK", 200)
         else:
@@ -124,11 +124,13 @@ def login_user():
         return user.serialize(), 200
     return _get_response("Resource not found", 400)
 
+
 def get_role_by_id(role_id):
-    role = UserService.get_role_value(db_session,role_id)
+    role = UserService.get_role_value(db_session, role_id)
     if role is None:
         return _get_response("Role not found", 404)
     return role.serialize()
+
 
 # --------- END API definition --------------------------
 logging.basicConfig(level=logging.DEBUG)

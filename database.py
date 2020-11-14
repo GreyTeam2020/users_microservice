@@ -61,7 +61,7 @@ class User(db):
         return self.id
 
     def serialize(self):
-        return dict([(k,v) for k,v in self.__dict__.items() if k[0] != '_'])
+        return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
 
 
 class Role(db):
@@ -71,8 +71,9 @@ class Role(db):
     id = Column(Integer, primary_key=True, autoincrement=True)
     value = Column(Text(100))
     label = Column(Text(100))
+
     def serialize(self):
-        return dict([(k,v) for k,v in self.__dict__.items() if k[0] != '_'])
+        return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
 
 
 class Positive(db):

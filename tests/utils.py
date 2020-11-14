@@ -10,10 +10,12 @@ class Utils:
     """
 
     @staticmethod
-    def get_json_about_new_user(name: str = "user_{}".format(randrange(100000)),
-                                lastname: str = "user_{}".format(randrange(100000)),
-                                password: str = "pass_{}".format(randrange(100000)), 
-                                phone: str = "349{}".format(randrange(100000))):
+    def get_json_about_new_user(
+        name: str = "user_{}".format(randrange(100000)),
+        lastname: str = "user_{}".format(randrange(100000)),
+        password: str = "pass_{}".format(randrange(100000)),
+        phone: str = "349{}".format(randrange(100000)),
+    ):
         """
         This method return the json about the new user
         :param name: name user (optional)

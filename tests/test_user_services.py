@@ -197,7 +197,7 @@ class Test_UserServices:
         user = UserService.user_login(db, user.email, json["password"])
         is_delete = UserService.delete_user(db, user.id)
         assert is_delete is True
-        
+
         user = Utils.get_user_on_db_with_email(db, user.email)
         assert user is None
 
@@ -234,5 +234,5 @@ class Test_UserServices:
         role = UserService.get_role_value(db, last_role.id + 1)
         assert role.value == "CAMALEONTE"
 
-        db.query(Role).filter_by(id = role.id).delete()
+        db.query(Role).filter_by(id=role.id).delete()
         db.commit()
