@@ -1,3 +1,5 @@
+import os
+
 import connexion
 from database import init_db
 import logging
@@ -121,7 +123,7 @@ def login_user():
             return _get_response(
                 "User with email {} not present".format(json["email"]), 404
             )
-        return user.serialize(), 200
+        return _get_response(user.serialize(), 200)
     return _get_response("Resource not found", 400)
 
 
@@ -134,8 +136,11 @@ def get_role_by_id(role_id):
 
 # --------- END API definition --------------------------
 logging.basicConfig(level=logging.DEBUG)
-db_session = init_db("sqlite:///user.db")
 app = connexion.App(__name__)
+if os.environ["GOUOUTSAFE_TEST"] == "1":
+    db_session = init_db("sqlite:///tests/user.db")
+else:
+    db_session = init_db("sqlite:///user.db")
 app.add_api("swagger.yml")
 # set the WSGI application callable to allow using uWSGI:
 # uwsgi --http :8080 -w app
@@ -148,9 +153,6 @@ def _init_flask_app(flask_app, conf_type: str = "config.DebugConfiguration"):
     :param flask_app:
     """
     flask_app.config.from_object(conf_type)
-    if "TestConfiguration" in conf_type:
-        global db_session
-        db_session = init_db("sqlite:///tests/user.db")
 
 
 @application.teardown_appcontext

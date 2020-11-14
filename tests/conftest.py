@@ -1,4 +1,6 @@
 import sys, os
+os.environ["GOUOUTSAFE_TEST"] = "1"
+
 from fixtures.client import *
 from fixtures.clean_db import *
 
