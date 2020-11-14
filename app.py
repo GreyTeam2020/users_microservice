@@ -46,7 +46,7 @@ def create_user():
             return _get_response(
                 "User not created because we have an error on server", 500
             )
-    return _get_response("Resource not found", 400)
+    return _get_response("Resource not found", 404)
 
 
 def create_operator():
@@ -72,10 +72,10 @@ def create_operator():
             return _get_response(
                 "User not created because we have an error on server", 500
             )
-    return _get_response("Resource not found", 400)
+    return _get_response("Resource not found", 404)
 
 
-def modify_user(id):
+def modify_user():
     """
     This API method contains the logic to modify a new user
     :return: the correct response that looks like {"result": "OK"}, 200
@@ -84,12 +84,13 @@ def modify_user(id):
     current_app.logger.debug("Modify user with id {}".format(id))
     current_app.logger.debug("Request content \n{}".format(json))
     if request.method == "PUT":
-        user = UserService.modify_user(db_session, json, id)
-        current_app.logger.debug(
-            "User after modify operation \n{}".format(user.serialize())
-        )
-        return _get_response(user.serialize(), 200, True)
-    return _get_response("Resource not found", 400)
+        user = UserService.modify_user(db_session, json)
+        if user is not None:
+            current_app.logger.debug(
+                "User after modify operation \n{}".format(user.serialize())
+            )
+            return _get_response(user.serialize(), 200, True)
+    return _get_response("Resource not found", 404)
 
 
 def delete_user(id):
@@ -103,12 +104,12 @@ def delete_user(id):
             current_app.logger.warn(
                 "The user with id {} doesn't exist, I can not delete it".format(id)
             )
-            return _get_response("User not exist", 500)
+            return _get_response("User doesn't exist", 404)
         if UserService.delete_user(db_session, id):
             return _get_response("OK", 200)
         else:
             return _get_response("User unauthenticated", 500)
-    return _get_response("Resource not found", 400)
+    return _get_response("Resource not found", 404)
 
 
 def login_user():
@@ -126,7 +127,7 @@ def login_user():
                 "User with email {} not present".format(json["email"]), 404
             )
         return _get_response(user.serialize(), 200, True)
-    return _get_response("Resource not found", 400)
+    return _get_response("Resource not found", 404)
 
 
 def get_role_by_id(role_id):

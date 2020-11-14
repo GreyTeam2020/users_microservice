@@ -167,7 +167,8 @@ class Test_UserServices:
 
         json["firstname"] = "Bart"
         json["role"] = user.role_id
-        user = UserService.modify_user(db, json, user.id)
+        json["id"] = user.id
+        user = UserService.modify_user(db, json)
         assert user is not None
         assert user.firstname == "Bart"
         Utils.del_user_on_db_with_id(db, user.id)
@@ -181,7 +182,8 @@ class Test_UserServices:
         json = Utils.get_json_about_new_user()
         json["role"] = 3
         json["firstname"] = "Bart"
-        user = UserService.modify_user(db, json, 1)
+        json["id"] = 1
+        user = UserService.modify_user(db, json)
         assert user is None
 
     def test_user_delete_ok(self, db):
