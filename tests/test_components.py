@@ -23,7 +23,7 @@ class Test_Components:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "100023",
-            "dateofbirth": "1996-12-12",
+            "dateofbirth": "12/12/1996",
             "email": "alibaba@alibaba.it",
         }
         response = Utils.register_user(client, json, 3)
@@ -49,7 +49,7 @@ class Test_Components:
             "firstname": "Vincenzo",
             "lastname": "Palazzo",
             "password": "Alibaba",
-            "dateofbirth": "1996-12-12",
+            "dateofbirth": "12/12/1996",
             "email": "alibaba@alibaba.it",
         }
         response = Utils.register_user(client, json, 3)
@@ -74,7 +74,7 @@ class Test_Components:
             "lastname": "Simpson",
             "password": "Alibaba",
             "phone": "80008000",
-            "dateofbirth": "1984-12-12",
+            "dateofbirth": "12/12/1984",
             "email": "homer@me.edu",
         }
         response = Utils.register_user(client, json, 3)

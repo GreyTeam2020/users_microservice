@@ -1,3 +1,5 @@
+import os
+
 import connexion
 from database import init_db
 import logging
@@ -8,14 +10,16 @@ from services.user_service import UserService
 db_session = None
 
 
-def _get_response(message: str, code: int):
+def _get_response(message: str, code: int, is_custom_obj: bool = False):
     """
     This method contains the code to make a new response for flask view
     :param message: Message response
     :param code: Code result
     :return: a json object that look like {"result": "OK"}
     """
-    return {"result": message}, code
+    if is_custom_obj is False:
+        return {"result": message}, code
+    return message, code
 
 
 def create_user():
@@ -61,7 +65,7 @@ def create_operator():
                 "User with email {} and/or phone already exist".format(email, phone),
                 500,
             )
-        user = UserService.create_user(db_session, json, 3)
+        user = UserService.create_user(db_session, json, 2)
         if user is not None:
             return _get_response("OK", 200)
         else:
@@ -84,7 +88,7 @@ def modify_user(id):
         current_app.logger.debug(
             "User after modify operation \n{}".format(user.serialize())
         )
-        return _get_response(user.serialize(), 200)
+        return _get_response(user.serialize(), 200, True)
     return _get_response("Resource not found", 400)
 
 
@@ -119,16 +123,26 @@ def login_user():
         )
         if user is None:
             return _get_response(
-                "User with email {} not present".format(json["email"]), 400
+                "User with email {} not present".format(json["email"]), 404
             )
-        return _get_response(user.serialize(), 200)
+        return _get_response(user.serialize(), 200, True)
     return _get_response("Resource not found", 400)
+
+
+def get_role_by_id(role_id):
+    role = UserService.get_role_value(db_session, role_id)
+    if role is None:
+        return _get_response("Role not found", 404)
+    return _get_response(role.serialize(), 200, True)
 
 
 # --------- END API definition --------------------------
 logging.basicConfig(level=logging.DEBUG)
-db_session = init_db("sqlite:///user.db")
 app = connexion.App(__name__)
+if os.environ["GOUOUTSAFE_TEST"] == "1":
+    db_session = init_db("sqlite:///tests/user.db")
+else:
+    db_session = init_db("sqlite:///user.db")
 app.add_api("swagger.yml")
 # set the WSGI application callable to allow using uWSGI:
 # uwsgi --http :8080 -w app
@@ -141,9 +155,6 @@ def _init_flask_app(flask_app, conf_type: str = "config.DebugConfiguration"):
     :param flask_app:
     """
     flask_app.config.from_object(conf_type)
-    if "TestConfiguration" in conf_type:
-        global db_session
-        db_session = init_db("sqlite:///tests/user.db")
 
 
 @application.teardown_appcontext
