@@ -10,14 +10,16 @@ from services.user_service import UserService
 db_session = None
 
 
-def _get_response(message: str, code: int):
+def _get_response(message: str, code: int, is_custom_obj: bool = False):
     """
     This method contains the code to make a new response for flask view
     :param message: Message response
     :param code: Code result
     :return: a json object that look like {"result": "OK"}
     """
-    return {"result": message}, code
+    if is_custom_obj is False:
+        return {"result": message}, code
+    return message, code
 
 
 def create_user():
@@ -86,7 +88,7 @@ def modify_user(id):
         current_app.logger.debug(
             "User after modify operation \n{}".format(user.serialize())
         )
-        return _get_response(user.serialize(), 200)
+        return _get_response(user.serialize(), 200, True)
     return _get_response("Resource not found", 400)
 
 
@@ -123,7 +125,7 @@ def login_user():
             return _get_response(
                 "User with email {} not present".format(json["email"]), 404
             )
-        return _get_response(user.serialize(), 200)
+        return _get_response(user.serialize(), 200, True)
     return _get_response("Resource not found", 400)
 
 
@@ -131,7 +133,7 @@ def get_role_by_id(role_id):
     role = UserService.get_role_value(db_session, role_id)
     if role is None:
         return _get_response("Role not found", 404)
-    return role.serialize()
+    return _get_response(role.serialize(), 200, True)
 
 
 # --------- END API definition --------------------------
