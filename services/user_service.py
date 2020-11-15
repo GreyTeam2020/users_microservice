@@ -35,7 +35,7 @@ class UserService:
         logging.debug("Phone {}".format(new_user.phone))
         date_string = json["dateofbirth"]
         logging.debug("date_string: {}".format(date_string))
-        new_user.dateofbirth = datetime.strptime(date_string, "%d/%m/%Y")
+        new_user.dateofbirth = datetime.strptime(date_string, "%Y-%m-%d")
         logging.debug("dateofbirth: {}".format(new_user.dateofbirth))
         new_user.role_id = role_id
         db_session.add(new_user)
@@ -99,7 +99,7 @@ class UserService:
         user.email = json["email"]
         user.firstname = json["firstname"]
         user.lastname = json["lastname"]
-        user.dateofbirth = datetime.strptime(date_string, "%d/%m/%Y")
+        user.dateofbirth = datetime.strptime(date_string, "%Y-%m-%d")
         user.role_id = json["role"]
         db_session.commit()
         return db_session.query(User).filter_by(email=email).first()

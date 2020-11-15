@@ -36,7 +36,7 @@ class Utils:
             "lastname": lastname,
             "password": password,
             "phone": phone,
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "{}@gmail.com".format(name),
         }
 
@@ -72,7 +72,7 @@ class Utils:
         :param user: Is the User form populate with the mock data
         :return: response from URL "/user/data{id}"
         """
-        return client.put("/user/data/", json=json_data, follow_redirects=True)
+        return client.patch("/user/data/", json=json_data, follow_redirects=True)
 
     @staticmethod
     def delete_user(client, id):

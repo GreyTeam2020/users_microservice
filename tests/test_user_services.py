@@ -23,7 +23,7 @@ class Test_UserServices:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "100023",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.it",
         }
         user = UserService.create_user(db, json)
@@ -46,7 +46,7 @@ class Test_UserServices:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "345432234",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.com",
         }
         user = UserService.create_user(db, json, 2)
@@ -71,7 +71,7 @@ class Test_UserServices:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "345432234",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.com",
         }
         user = UserService.create_user(db, json, 2)
@@ -98,7 +98,7 @@ class Test_UserServices:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "345432234",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.com",
         }
         user = UserService.create_user(db, json, 2)

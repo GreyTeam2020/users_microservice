@@ -31,6 +31,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
+        412:
+          description: "user already exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
         500:
           description: "The code returned if there is some error on server, e.g: user already exist"
           content:
@@ -58,6 +64,86 @@ paths:
                 $ref: '#/components/schemas/Result'
         404:
           description: "user not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        412:
+          description: "user already exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        500:
+          description: "The code returned if there is some error on server, e.g: user already exist"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /user/user_by_email:
+        post:
+            tags:
+              - User
+            summary: Make a check if the user is inside the server. Perform the research by email.
+            operationId: app.user_is_present_by_email
+            requestBody:
+              required: true
+              content:
+                application/json:
+                  schema:
+                    $ref: '#/components/schemas/UserCheckByEmail'
+            responses:
+              200:
+                description: "The operation is done"
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/Result'
+              404:
+                description: "user not found"
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/Result'
+              412:
+                description: "user already exist"
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/Result'
+              500:
+                description: "The code returned if there is some error on server, e.g: user already exist"
+                content:
+                  application/json:
+                    schema:
+                      $ref: '#/components/schemas/Result'
+  /user/user_by_phone:
+    post:
+      tags:
+        - User
+      summary: Make a check if the user is inside the server. Perform the research by phone.
+      operationId: app.user_is_present_by_phone
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCheckByPhone'
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        404:
+          description: "user not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        412:
+          description: "user already exist"
           content:
             application/json:
               schema:
@@ -100,7 +186,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Result'
   /user/data/:
-    put:
+    patch:
       tags:
         - User
       summary: Update the user data.
@@ -151,13 +237,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/Result'
         404:
-          description: "Resource don't found"
+          description: "User not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        401:
+          description: "User not authenticate"
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
         500:
-          description: "The code returned if there is some error on server, e.g: user already exist"
+          description: "The code returned if there is some error on server"
           content:
             application/json:
               schema:
@@ -316,7 +408,6 @@ components:
           maxLength: 50
           description: Password of the new user
           example: "*********"
-
     Role:
       required:
         - id
@@ -341,5 +432,27 @@ components:
           type: string
           description: Role label
           example: "admin role"
+    UserCheckByEmail:
+      required:
+        - email
+      type: object
+      properties:
+          email:
+            maxLength: 100
+            minLength: 1
+            type: string
+            description: User email
+            example: "adriano@gmail.com"
+    UserCheckByPhone:
+      required:
+        - phone
+      type: object
+      properties:
+        phone:
+              type: string
+              minLength: 5
+              maxLength: 50
+              description: Phone number of user
+              example: "480343234"
 
   
