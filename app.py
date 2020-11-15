@@ -8,7 +8,7 @@ from services.user_service import UserService
 
 
 db_session = None
-
+os.environ["GOUOUTSAFE_TEST"] = "0"
 
 def _get_response(message: str, code: int, is_custom_obj: bool = False):
     """
