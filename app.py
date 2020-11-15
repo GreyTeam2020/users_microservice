@@ -143,7 +143,7 @@ def user_is_present_by_email():
         user = UserService.user_is_present(db_session, email)
         if user is None:
             return _get_response("User not found", 404)
-        return _get_response(user.serialize(), 200)
+        return _get_response(user.serialize(), 200, True)
     return _get_response("User not found", 404)
 
 
@@ -160,7 +160,7 @@ def user_is_present_by_phone():
         user = UserService.user_is_present(db_session, phone=phone)
         if user is None:
             return _get_response("User not found", 404)
-        return _get_response(user.serialize(), 200)
+        return _get_response(user.serialize(), 200, True)
     return _get_response("User not found", 404)
 
 
