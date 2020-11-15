@@ -134,7 +134,16 @@ def user_is_present_by_email():
     This method perform the research of the user by email
     :return: :return: the correct response.
     """
-    pass
+    if request.method == "POST":
+        json = request.get_json()
+        current_app.logger.debug("Request received: {}".format(json))
+        email = json["email"]
+        current_app.logger.debug("User email {}".format(email))
+        user = UserService.user_is_present(db_session, email)
+        if user is None:
+            return _get_response("User not found", 404)
+        return _get_response(user.serialize(), 200)
+    return _get_response("User not found", 404)
 
 
 def user_is_present_by_phone():
@@ -142,7 +151,16 @@ def user_is_present_by_phone():
     This method perform the research of the user by phone
     :return: :return: the correct response.
     """
-    pass
+    if request.method == "POST":
+        json = request.get_json()
+        current_app.logger.debug("Request received: {}".format(json))
+        phone = json["phone"]
+        current_app.logger.debug("User phone {}".format(phone))
+        user = UserService.user_is_present(db_session, phone=phone)
+        if user is None:
+            return _get_response("User not found", 404)
+        return _get_response(user.serialize(), 200)
+    return _get_response("User not found", 404)
 
 def get_role_by_id(role_id):
     role = UserService.get_role_value(db_session, role_id)

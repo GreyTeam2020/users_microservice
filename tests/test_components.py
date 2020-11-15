@@ -256,3 +256,65 @@ class Test_Components:
         response = Utils.delete_user(client, 1)
         assert response.status_code == 404
         assert "User doesn't exist" in response.data.decode("utf-8")
+
+    def test_check_user_ok(self, client, db):
+        """
+        This function test the perform the  request to login the user
+        :param client: flask test client
+        :param db: database session
+        """
+        json_create = {
+            "firstname": "Vincenzo",
+            "lastname": "Palazzo",
+            "password": "Alibaba",
+            "phone": "100023",
+            "dateofbirth": "1996-12-12",
+            "email": "alibaba@alibaba.it",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+
+        json = {
+            "email": json_create["email"],
+        }
+        response = Utils.check_user(client, json)
+        assert response.status_code == 200
+        assert user.email in response.data.decode("utf-8")
+
+        json = {
+            "phone": json_create["phone"],
+        }
+        response = Utils.check_user(client, json)
+        assert response.status_code == 200
+        assert user.phone in response.data.decode("utf-8")
+
+        Utils.del_user_on_db_with_id(db, user.id)
+        user = Utils.get_user_on_db_with_email(db, json_create["email"])
+        assert user is None
+
+    def test_check_user_ok(self, client, db):
+        """
+        This function test the perform the  request to login the user
+        :param client: flask test client
+        :param db: database session
+        """
+        json_create = {
+            "firstname": "Vincenzo",
+            "lastname": "Palazzo",
+            "password": "Alibaba",
+            "phone": "100023",
+            "dateofbirth": "1996-12-12",
+            "email": "alibaba@alibaba.it",
+        }
+
+        json = {
+            "email": json_create["email"],
+        }
+        response = Utils.check_user(client, json)
+        assert response.status_code == 404
+
+        json = {
+            "phone": json_create["phone"],
+        }
+        response = Utils.check_user(client, json)
+        assert response.status_code == 404

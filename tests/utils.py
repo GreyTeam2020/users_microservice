@@ -65,6 +65,18 @@ class Utils:
         return client.post("/user/login", json=json_data, follow_redirects=True)
 
     @staticmethod
+    def check_user(client, json_data):
+        """
+        This method perform the request to register a new user
+        :param client: Is a flask app created inside the fixtures
+        :param user: Is the User form populate with the mock data
+        :return: response from URL "/user/create_user"
+        """
+        if "email" in json_data:
+            return client.post("/user/user_by_email", json=json_data, follow_redirects=True)
+        return client.post("/user/user_by_phone", json=json_data, follow_redirects=True)
+
+    @staticmethod
     def modify_user(client, json_data):
         """
         This method perform the request to register a new user
