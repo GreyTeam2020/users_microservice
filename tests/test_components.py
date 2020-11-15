@@ -3,6 +3,7 @@ import logging
 from utils import Utils
 from services import UserService
 
+
 class Test_Components:
     """
     This test include the component testing that
@@ -131,7 +132,9 @@ class Test_Components:
         }
         response = Utils.login_user(client, json_login)
         assert response.status_code == 404
-        assert "User with email {} not present".format(json_login["email"]) in response.data.decode("utf-8")
+        assert "User with email {} not present".format(
+            json_login["email"]
+        ) in response.data.decode("utf-8")
 
         user = Utils.get_user_on_db_with_email(db, json_login["email"])
         assert user is None

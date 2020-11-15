@@ -1,0 +1,10 @@
+[run]
+omit =
+    tests/fixtures/__init__.py
+    tests/fixtures/clean_db.py
+    tests/fixtures/client.py
+    tests/conftest.py
+    setup.py
+    services/__init__.py
+    config.py
+    __init__.py

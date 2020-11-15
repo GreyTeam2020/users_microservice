@@ -9,6 +9,7 @@ from services.user_service import UserService
 
 db_session = None
 
+
 def _get_response(message: str, code: int, is_custom_obj: bool = False):
     """
     This method contains the code to make a new response for flask view
@@ -161,6 +162,7 @@ def user_is_present_by_phone():
             return _get_response("User not found", 404)
         return _get_response(user.serialize(), 200)
     return _get_response("User not found", 404)
+
 
 def get_role_by_id(role_id):
     role = UserService.get_role_value(db_session, role_id)

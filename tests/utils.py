@@ -73,7 +73,9 @@ class Utils:
         :return: response from URL "/user/create_user"
         """
         if "email" in json_data:
-            return client.post("/user/user_by_email", json=json_data, follow_redirects=True)
+            return client.post(
+                "/user/user_by_email", json=json_data, follow_redirects=True
+            )
         return client.post("/user/user_by_phone", json=json_data, follow_redirects=True)
 
     @staticmethod
@@ -125,7 +127,7 @@ class Utils:
         """
         return db_session.query(User).filter_by(email=email_user).first()
 
-# --------------------------- UTil function to make operation with Database --------------------------
+    # --------------------------- UTil function to make operation with Database --------------------------
 
     @staticmethod
     def create_user_on_db(db_session, ran: int = randrange(100000)):
