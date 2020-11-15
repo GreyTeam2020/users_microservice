@@ -36,7 +36,7 @@ class Utils:
             "lastname": lastname,
             "password": password,
             "phone": phone,
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "{}@gmail.com".format(name),
         }
 
@@ -65,6 +65,20 @@ class Utils:
         return client.post("/user/login", json=json_data, follow_redirects=True)
 
     @staticmethod
+    def check_user(client, json_data):
+        """
+        This method perform the request to register a new user
+        :param client: Is a flask app created inside the fixtures
+        :param user: Is the User form populate with the mock data
+        :return: response from URL "/user/create_user"
+        """
+        if "email" in json_data:
+            return client.post(
+                "/user/user_by_email", json=json_data, follow_redirects=True
+            )
+        return client.post("/user/user_by_phone", json=json_data, follow_redirects=True)
+
+    @staticmethod
     def modify_user(client, json_data):
         """
         This method perform the request to register a new user
@@ -72,7 +86,7 @@ class Utils:
         :param user: Is the User form populate with the mock data
         :return: response from URL "/user/data{id}"
         """
-        return client.put("/user/data/", json=json_data, follow_redirects=True)
+        return client.patch("/user/data/", json=json_data, follow_redirects=True)
 
     @staticmethod
     def delete_user(client, id):
@@ -113,7 +127,7 @@ class Utils:
         """
         return db_session.query(User).filter_by(email=email_user).first()
 
-# --------------------------- UTil function to make operation with Database --------------------------
+    # --------------------------- UTil function to make operation with Database --------------------------
 
     @staticmethod
     def create_user_on_db(db_session, ran: int = randrange(100000)):

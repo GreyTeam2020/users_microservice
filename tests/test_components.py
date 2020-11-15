@@ -1,5 +1,8 @@
+import logging
+
 from utils import Utils
 from services import UserService
+
 
 class Test_Components:
     """
@@ -23,7 +26,7 @@ class Test_Components:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "100023",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.it",
         }
         response = Utils.register_user(client, json, 3)
@@ -50,7 +53,7 @@ class Test_Components:
             "firstname": "Vincenzo",
             "lastname": "Palazzo",
             "password": "Alibaba",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.it",
         }
         response = Utils.register_user(client, json, 3)
@@ -75,7 +78,7 @@ class Test_Components:
             "lastname": "Simpson",
             "password": "Alibaba",
             "phone": "80008000",
-            "dateofbirth": "12/12/1984",
+            "dateofbirth": "1984-12-12",
             "email": "homer@me.edu",
         }
         response = Utils.register_user(client, json, 3)
@@ -83,7 +86,7 @@ class Test_Components:
         assert "OK" in response.data.decode("utf-8")
 
         response = Utils.register_user(client, json, 3)
-        assert response.status_code == 500
+        assert response.status_code == 412
 
         Utils.del_user_on_db_with_email(db, json["email"])
 
@@ -98,7 +101,7 @@ class Test_Components:
             "lastname": "Palazzo",
             "password": "Alibaba",
             "phone": "100023",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.it",
         }
         user = UserService.create_user(db, json_create)
@@ -129,7 +132,9 @@ class Test_Components:
         }
         response = Utils.login_user(client, json_login)
         assert response.status_code == 404
-        assert "User with email {} not present".format(json_login["email"]) in response.data.decode("utf-8")
+        assert "User with email {} not present".format(
+            json_login["email"]
+        ) in response.data.decode("utf-8")
 
         user = Utils.get_user_on_db_with_email(db, json_login["email"])
         assert user is None
@@ -145,7 +150,7 @@ class Test_Components:
             "lastname": "Simpson",
             "password": "Alibaba",
             "phone": "100023",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.it",
         }
         user = UserService.create_user(db, json)
@@ -156,6 +161,7 @@ class Test_Components:
         json["id"] = user.id
 
         response = Utils.modify_user(client, json)
+        logging.debug(response.data)
         user = Utils.get_user_on_db_with_email(db, json["email"])
         assert response.status_code == 200
         assert "Homer" in response.data.decode("utf-8")
@@ -176,7 +182,7 @@ class Test_Components:
             "lastname": "Simpson",
             "password": "Alibaba",
             "phone": "100023",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.it",
         }
         json["role"] = 3
@@ -200,7 +206,7 @@ class Test_Components:
             "lastname": "Simpson",
             "password": "Alibaba",
             "phone": "100023",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.it",
         }
         user = UserService.create_user(db, json)
@@ -230,14 +236,14 @@ class Test_Components:
             "lastname": "Simpson",
             "password": "Alibaba",
             "phone": "100023",
-            "dateofbirth": "12/12/1996",
+            "dateofbirth": "1996-12-12",
             "email": "alibaba@alibaba.it",
         }
         user = UserService.create_user(db, json)
         assert user is not None
 
         response = Utils.delete_user(client, user.id)
-        assert response.status_code == 500
+        assert response.status_code == 401
         assert "User unauthenticated" in response.data.decode("utf-8")
 
         Utils.del_user_on_db_with_id(db, user.id)
@@ -253,3 +259,65 @@ class Test_Components:
         response = Utils.delete_user(client, 1)
         assert response.status_code == 404
         assert "User doesn't exist" in response.data.decode("utf-8")
+
+    def test_check_user_ok(self, client, db):
+        """
+        This function test the perform the  request to login the user
+        :param client: flask test client
+        :param db: database session
+        """
+        json_create = {
+            "firstname": "Vincenzo",
+            "lastname": "Palazzo",
+            "password": "Alibaba",
+            "phone": "100023",
+            "dateofbirth": "1996-12-12",
+            "email": "alibaba@alibaba.it",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+
+        json = {
+            "email": json_create["email"],
+        }
+        response = Utils.check_user(client, json)
+        assert response.status_code == 200
+        assert user.email in response.data.decode("utf-8")
+
+        json = {
+            "phone": json_create["phone"],
+        }
+        response = Utils.check_user(client, json)
+        assert response.status_code == 200
+        assert user.phone in response.data.decode("utf-8")
+
+        Utils.del_user_on_db_with_id(db, user.id)
+        user = Utils.get_user_on_db_with_email(db, json_create["email"])
+        assert user is None
+
+    def test_check_user_ok(self, client, db):
+        """
+        This function test the perform the  request to login the user
+        :param client: flask test client
+        :param db: database session
+        """
+        json_create = {
+            "firstname": "Vincenzo",
+            "lastname": "Palazzo",
+            "password": "Alibaba",
+            "phone": "100023",
+            "dateofbirth": "1996-12-12",
+            "email": "alibaba@alibaba.it",
+        }
+
+        json = {
+            "email": json_create["email"],
+        }
+        response = Utils.check_user(client, json)
+        assert response.status_code == 404
+
+        json = {
+            "phone": json_create["phone"],
+        }
+        response = Utils.check_user(client, json)
+        assert response.status_code == 404

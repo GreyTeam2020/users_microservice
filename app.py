@@ -9,6 +9,7 @@ from services.user_service import UserService
 
 db_session = None
 
+
 def _get_response(message: str, code: int, is_custom_obj: bool = False):
     """
     This method contains the code to make a new response for flask view
@@ -62,7 +63,7 @@ def create_operator():
         if user is not None:
             return _get_response(
                 "User with email {} and/or phone already exist".format(email, phone),
-                500,
+                412,
             )
         user = UserService.create_user(db_session, json, 2)
         if user is not None:
@@ -82,7 +83,7 @@ def modify_user():
     json = request.get_json()
     current_app.logger.debug("Modify user with id {}".format(id))
     current_app.logger.debug("Request content \n{}".format(json))
-    if request.method == "PUT":
+    if request.method == "PATCH":
         user = UserService.modify_user(db_session, json)
         if user is not None:
             current_app.logger.debug(
@@ -107,7 +108,7 @@ def delete_user(id):
         if UserService.delete_user(db_session, id):
             return _get_response("OK", 200)
         else:
-            return _get_response("User unauthenticated", 500)
+            return _get_response("User unauthenticated", 401)
     return _get_response("Resource not found", 404)
 
 
@@ -127,6 +128,40 @@ def login_user():
             )
         return _get_response(user.serialize(), 200, True)
     return _get_response("Resource not found", 404)
+
+
+def user_is_present_by_email():
+    """
+    This method perform the research of the user by email
+    :return: :return: the correct response.
+    """
+    if request.method == "POST":
+        json = request.get_json()
+        current_app.logger.debug("Request received: {}".format(json))
+        email = json["email"]
+        current_app.logger.debug("User email {}".format(email))
+        user = UserService.user_is_present(db_session, email)
+        if user is None:
+            return _get_response("User not found", 404)
+        return _get_response(user.serialize(), 200)
+    return _get_response("User not found", 404)
+
+
+def user_is_present_by_phone():
+    """
+    This method perform the research of the user by phone
+    :return: :return: the correct response.
+    """
+    if request.method == "POST":
+        json = request.get_json()
+        current_app.logger.debug("Request received: {}".format(json))
+        phone = json["phone"]
+        current_app.logger.debug("User phone {}".format(phone))
+        user = UserService.user_is_present(db_session, phone=phone)
+        if user is None:
+            return _get_response("User not found", 404)
+        return _get_response(user.serialize(), 200)
+    return _get_response("User not found", 404)
 
 
 def get_role_by_id(role_id):
