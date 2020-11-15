@@ -162,11 +162,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
-  /role/{role_id}:
+  /user/role/{role_id}:
     get:
       tags:
-        - Role
-      summary: get Role value
+        - User
+      summary: Get the value associated to the role_id
       operationId: app.get_role_by_id
       parameters:
         - in: path

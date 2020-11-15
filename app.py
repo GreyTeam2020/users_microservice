@@ -9,7 +9,6 @@ from services.user_service import UserService
 
 db_session = None
 
-
 def _get_response(message: str, code: int, is_custom_obj: bool = False):
     """
     This method contains the code to make a new response for flask view
@@ -101,7 +100,7 @@ def delete_user(id):
     if request.method == "DELETE":
         user = UserService.user_is_present_with_id(db_session, id)
         if user is None:
-            current_app.logger.warn(
+            current_app.logger.warning(
                 "The user with id {} doesn't exist, I can not delete it".format(id)
             )
             return _get_response("User doesn't exist", 404)
@@ -140,7 +139,7 @@ def get_role_by_id(role_id):
 # --------- END API definition --------------------------
 logging.basicConfig(level=logging.DEBUG)
 app = connexion.App(__name__)
-if os.environ["GOUOUTSAFE_TEST"] == "1":
+if "GOUOUTSAFE_TEST" in os.environ and os.environ["GOUOUTSAFE_TEST"] == "1":
     db_session = init_db("sqlite:///tests/user.db")
 else:
     db_session = init_db("sqlite:///user.db")
