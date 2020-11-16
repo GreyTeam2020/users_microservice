@@ -203,23 +203,6 @@ class Test_UserServices:
         user = Utils.get_user_on_db_with_email(db, user.email)
         assert user is None
 
-    def test_user_delete_ko(self, db):
-        """
-        This function contains the code to test the
-        User services about the login, and I will aspect a good result.
-        :param db: database session
-        """
-        json = Utils.get_json_about_new_user()
-        user = UserService.create_user(db, json)
-        assert user is not None
-        assert user.role_id is 3
-
-        is_delete = UserService.delete_user(db, user.id)
-        assert is_delete is False
-
-        user = Utils.get_user_on_db_with_email(db, user.email)
-        assert user is not None
-
     def test_get_role(self, db):
         """
         This function contains the code to test the

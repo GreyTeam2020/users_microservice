@@ -90,9 +90,7 @@ def modify_user():
                 "User after modify operation \n{}".format(user.serialize())
             )
             return _get_response(user.serialize(), 200, True)
-        current_app.logger.debug(
-            "User is none? {}".format(user is None)
-        )
+        current_app.logger.debug("User is none? {}".format(user is None))
     return _get_response("Resource not found", 404)
 
 
@@ -108,10 +106,8 @@ def delete_user(id):
                 "The user with id {} doesn't exist, I can not delete it".format(id)
             )
             return _get_response("User doesn't exist", 404)
-        if UserService.delete_user(db_session, id):
-            return _get_response("OK", 200)
-        else:
-            return _get_response("User unauthenticated", 401)
+        UserService.delete_user(db_session, id)
+        return _get_response("OK", 200)
     return _get_response("Resource not found", 404)
 
 
@@ -180,7 +176,7 @@ app = connexion.App(__name__)
 if "GOUOUTSAFE_TEST" in os.environ and os.environ["GOUOUTSAFE_TEST"] == "1":
     db_session = init_db("sqlite:///tests/user.db")
 else:
-    db_session = init_db("sqlite:///db/user.db")
+    db_session = init_db("sqlite:///user.db")
 app.add_api("swagger.yml")
 # set the WSGI application callable to allow using uWSGI:
 # uwsgi --http :8080 -w app

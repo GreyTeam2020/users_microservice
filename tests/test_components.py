@@ -225,31 +225,6 @@ class Test_Components:
         user = Utils.get_user_on_db_with_email(db, json["email"])
         assert user is None
 
-    def test_delete_user_ko_no_logged(self, client, db):
-        """
-        This test method perform the request to modify the user
-        :param client: flask test client
-        :param db: database session
-        """
-        json = {
-            "firstname": "Bart",
-            "lastname": "Simpson",
-            "password": "Alibaba",
-            "phone": "100023",
-            "dateofbirth": "1996-12-12",
-            "email": "alibaba@alibaba.it",
-        }
-        user = UserService.create_user(db, json)
-        assert user is not None
-
-        response = Utils.delete_user(client, user.id)
-        assert response.status_code == 401
-        assert "User unauthenticated" in response.data.decode("utf-8")
-
-        Utils.del_user_on_db_with_id(db, user.id)
-        user = Utils.get_user_on_db_with_email(db, json["email"])
-        assert user is None
-
     def test_delete_user_ko(self, client, db):
         """
         This test method perform the request to modify the user
