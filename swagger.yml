@@ -186,7 +186,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Result'
   /user/data/:
-    patch:
+    put:
       tags:
         - User
       summary: Update the user data.
@@ -196,7 +196,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserWithRole'
+              $ref: '#/components/schemas/UserModify'
       responses:
         200:
           description: "The operation is done"
@@ -454,5 +454,51 @@ components:
               maxLength: 50
               description: Phone number of user
               example: "480343234"
+    UserModify:
+        required:
+          - email
+          - firstname
+          - lastname
+          - phone
+          - dateofbirth
+          - role
+          - id
+        type: object
+        properties:
+          email:
+            maxLength: 100
+            minLength: 1
+            type: string
+            description: User email
+            example: "adriano@gmail.com"
+          firstname:
+            maxLength: 100
+            minLength: 1
+            type: string
+            description: User name
+            example: "Adriano"
+          lastname:
+            maxLength: 100
+            minLength: 1
+            type: string
+            description: User name
+            example: "Galiani"
+          phone:
+            type: string
+            minLength: 5
+            maxLength: 50
+            description: Restaurant Phone Number
+            example: "050123456"
+          dateofbirth:
+            type: string
+            format: date
+            example: "2017-07-21"
+          role:
+            type: integer
+            example: 2
+          id:
+            type: integer
+            example: 3
+
 
   

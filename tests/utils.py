@@ -86,7 +86,7 @@ class Utils:
         :param user: Is the User form populate with the mock data
         :return: response from URL "/user/data{id}"
         """
-        return client.patch("/user/data/", json=json_data, follow_redirects=True)
+        return client.put("/user/data/", json=json_data, follow_redirects=True)
 
     @staticmethod
     def delete_user(client, id):
