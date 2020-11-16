@@ -210,12 +210,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
-        500:
-          description: "The code returned if there is some error on server, e.g: user already exist"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Result'
   /user/delete/{id}:
     delete:
       tags:

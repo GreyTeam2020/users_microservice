@@ -8,3 +8,4 @@ omit =
     services/__init__.py
     config.py
     __init__.py
+    .tox/*

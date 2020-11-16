@@ -78,7 +78,7 @@ def create_operator():
 def modify_user():
     """
     This API method contains the logic to modify a new user
-    :return: the correct response that looks like {"result": "OK"}, 200
+    :return: the correct response
     """
     json = request.get_json()
     current_app.logger.debug("Modify user with id {}".format(id))
