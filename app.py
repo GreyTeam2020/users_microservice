@@ -177,7 +177,7 @@ app = connexion.App(__name__)
 if "GOUOUTSAFE_TEST" in os.environ and os.environ["GOUOUTSAFE_TEST"] == "1":
     db_session = init_db("sqlite:///tests/user.db")
 else:
-    db_session = init_db("sqlite:///user.db")
+    db_session = init_db("sqlite:///db/user.db")
 app.add_api("swagger.yml")
 # set the WSGI application callable to allow using uWSGI:
 # uwsgi --http :8080 -w app
