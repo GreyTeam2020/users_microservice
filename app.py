@@ -83,13 +83,16 @@ def modify_user():
     json = request.get_json()
     current_app.logger.debug("Modify user with id {}".format(id))
     current_app.logger.debug("Request content \n{}".format(json))
-    if request.method == "PATCH":
+    if request.method == "PUT":
         user = UserService.modify_user(db_session, json)
         if user is not None:
             current_app.logger.debug(
                 "User after modify operation \n{}".format(user.serialize())
             )
             return _get_response(user.serialize(), 200, True)
+        current_app.logger.debug(
+            "User is none? {}".format(user is None)
+        )
     return _get_response("Resource not found", 404)
 
 
