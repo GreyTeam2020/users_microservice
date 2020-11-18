@@ -221,3 +221,19 @@ class Test_UserServices:
 
         db.query(Role).filter_by(id=role.id).delete()
         db.commit()
+
+    def test_get_user_by_email(self, db):
+        """
+        This function contains the code to test the
+        user service tha allows to retetrive the user having the email
+        :param db: database session
+        """
+        json = Utils.get_json_about_new_user()
+        user = UserService.create_user(db, json)
+        assert user is not None
+        assert user.role_id is 3
+
+        assert UserService.get_user_by_email(db, user.email).id == user.id
+
+        is_delete = UserService.delete_user(db, user.id)
+        assert is_delete is True

@@ -113,3 +113,7 @@ class UserService:
     @staticmethod
     def get_role_value(db_session, role_id):
         return db_session.query(Role).filter_by(id=role_id).first()
+
+    @staticmethod
+    def get_user_by_email(db_session, email):
+        return db_session.query(User).filter_by(email=email).first()

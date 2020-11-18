@@ -185,6 +185,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
+  /user/email/{email}:
+    get:
+      tags:
+        - User
+      summary: Get the user by email
+      operationId: app.get_user_by_email
+      parameters:
+        - in: path
+          name: email
+          schema:
+            type: integer
+          required: true
+          description: The role ID
+      responses:
+        200:
+          description: "User is returned"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        404:
+          description: "User not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
   /user/data/:
     put:
       tags:

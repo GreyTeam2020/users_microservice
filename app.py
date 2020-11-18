@@ -170,6 +170,13 @@ def get_role_by_id(role_id):
     return _get_response(role.serialize(), 200, True)
 
 
+def get_user_by_email(email):
+    user = UserService.get_user_by_email(email)
+    if user is None:
+        return _get_response("User not found", 404)
+    return (user.serialize(), 200)
+
+
 # --------- END API definition --------------------------
 logging.basicConfig(level=logging.DEBUG)
 app = connexion.App(__name__)
