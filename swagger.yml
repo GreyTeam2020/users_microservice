@@ -185,19 +185,18 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
-  /user/email/{email}:
-    get:
+  /user/email:
+    post:
       tags:
         - User
       summary: Get the user by email
       operationId: app.get_user_by_email
-      parameters:
-        - in: path
-          name: email
-          schema:
-            type: integer
-          required: true
-          description: The role ID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCheckByEmail'
       responses:
         200:
           description: "User is returned"
