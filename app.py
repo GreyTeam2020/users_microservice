@@ -178,7 +178,15 @@ def get_user_by_email():
     user = UserService.get_user_by_email(db_session, json["email"])
     if user is None:
         return _get_response("User not found", 404)
-    return (user.serialize(), 200)
+    return _get_response(user.serialize(), 200, True)
+
+
+def get_user_by_id(id):
+    user = UserService.get_user_by_id(db_session, id)
+    if user is None:
+        if user is None:
+            return _get_response("User not found", 404)
+    return _get_response(user.serialize(), 200, True)
 
 
 # --------- END API definition --------------------------

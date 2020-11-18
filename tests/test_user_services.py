@@ -237,3 +237,52 @@ class Test_UserServices:
 
         is_delete = UserService.delete_user(db, user.id)
         assert is_delete is True
+
+    def test_mark_user_as_covid_positive(self, db):
+        """
+        This function test try to discover fault inside the
+        mark postivive function inside the USerServices
+
+        Flow tests is:
+        - Create a new User
+        - Mark this user as positive
+        - check if the user if positive on the table
+        - clean db (remove the user and the positive)
+        """
+        json = Utils.get_json_about_new_user()
+        user = UserService.create_user(db, json)
+        assert user is not None
+        assert user.role_id is 3
+
+        success_mark = UserService.mark_user_as_positive(db, user.id)
+        assert success_mark is True
+
+        Utils.del_user_on_db_with_id(db, user.id)
+        user = Utils.del_user_on_db_with_id(db, user.id)
+        assert user is None
+
+    def test_unmark_user_as_covid_positive(self, db):
+        """
+        This function test try to discover fault inside the
+        mark postivive function inside the USerServices
+
+        Flow tests is:
+        - Create a new User
+        - Mark this user as positive
+        - check if the user if positive on the table
+        - clean db (remove the user and the positive)
+        """
+        json = Utils.get_json_about_new_user()
+        user = UserService.create_user(db, json)
+        assert user is not None
+        assert user.role_id is 3
+
+        success_mark = UserService.mark_user_as_positive(db, user.id)
+        assert success_mark is True
+
+        success_unmark = UserService.unmark_user_as_not_positive(db, user.id)
+        assert success_unmark is True
+
+        Utils.del_user_on_db_with_id(db, user.id)
+        user = Utils.del_user_on_db_with_id(db, user.id)
+        assert user is None

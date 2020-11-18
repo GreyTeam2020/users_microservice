@@ -270,7 +270,7 @@ class Test_Components:
         user = Utils.get_user_on_db_with_email(db, json_create["email"])
         assert user is None
 
-    def test_check_user_ok(self, client, db):
+    def test_check_user_ko(self, client, db):
         """
         This function test the perform the  request to login the user
         :param client: flask test client
@@ -296,3 +296,46 @@ class Test_Components:
         }
         response = Utils.check_user(client, json)
         assert response.status_code == 404
+
+    def test_get_role_by_id(self, client, db):
+        """
+        TODO implement the test to check if the method to
+        get the role by id work
+        :param client:
+        :param db:
+        :return:
+        """
+        pass
+
+    def test_get_user_by_id(self, client, db):
+        """
+        Test flow:
+        - Create User
+        - Get user by id
+        - check user
+        - clean db
+        :param client: flask test client
+        :param db: db session
+        """
+        json_create = {
+            "firstname": "Vincenzo",
+            "lastname": "Palazzo",
+            "password": "Alibaba",
+            "phone": "100023",
+            "dateofbirth": "1996-12-12",
+            "email": "alibaba@alibaba.it",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+        
+        response = Utils.get_user_by_id(client, user.id)
+        assert response.status_code == 200
+        json = response.data.decode("utf-8")
+        assert user.firstname in json
+        assert user.phone in json
+        assert user.email in json
+        assert str(user.role_id) in json
+
+        Utils.del_user_on_db_with_id(db, user.id)
+        user = Utils.get_user_on_db_with_email(db, json_create["email"])
+        assert user is None

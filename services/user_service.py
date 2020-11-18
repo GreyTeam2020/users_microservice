@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from database import User, Role
+from database import User, Role, Positive
 
 
 class UserService:
@@ -115,5 +115,44 @@ class UserService:
         return db_session.query(Role).filter_by(id=role_id).first()
 
     @staticmethod
-    def get_user_by_email(db_session, email):
+    def get_user_by_email(db_session, email) -> User:
         return db_session.query(User).filter_by(email=email).first()
+
+    @staticmethod
+    def get_user_by_id(db_session, user_id) -> User:
+        """
+        This method retrieval the user with the id
+        :param db_session:
+        :param user_id:
+        :return:
+        """
+        return db_session.query(User).filter_by(id=user_id).first()
+
+    @staticmethod
+    def mark_user_as_positive(db_session, user_id: int) -> bool:
+        """
+        This method is user to mark the user as positive
+        :param db_session:
+        :return: a boolean value as result
+        """
+        new_positive = Positive()
+        new_positive.from_date = datetime.now()
+        new_positive.marked = True
+        new_positive.user_id = user_id
+        db_session.add(new_positive)
+        db_session.commit()
+        return True
+
+    @staticmethod
+    def unmark_user_as_not_positive(db_session, user_id: int) -> bool:
+        """
+        This method is user to unmark the user with as not covid19 positive
+        :param db_session:
+        :return: a boolean value as result
+        """
+        positive = db_session.query(Positive).filter_by(user_id=user_id).first()
+        if positive is None:
+            return False
+        positive.marked = False
+        db_session.commit()
+        return True

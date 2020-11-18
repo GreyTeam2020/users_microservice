@@ -293,6 +293,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
+  /user/{id}:
+    get:
+      tags:
+        - User
+      summary: get the user with the ID
+      operationId: app.get_user_by_id
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
+          description: User ID
+      responses:
+        200:
+          description: "User is returned"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserWithRole'
+        404:
+          description: "User not found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
 components:
   schemas:
     User:

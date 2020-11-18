@@ -1,6 +1,6 @@
 from random import randrange
 
-from database import User
+from database import User, Positive
 from services import UserService
 
 
@@ -55,6 +55,10 @@ class Utils:
         return client.post("/user/create_user", json=json_data, follow_redirects=True)
 
     @staticmethod
+    def get_user_by_id(client, user_id):
+        return client.get("/user/{}".format(user_id), follow_redirects=True)
+
+    @staticmethod
     def login_user(client, json_data):
         """
         This method perform the request to register a new user
@@ -105,6 +109,7 @@ class Utils:
         :param db_session: database session
         :param user_id: user id
         """
+        db_session.query(Positive).filter_by(user_id=user_id).delete()
         db_session.query(User).filter_by(id=user_id).delete()
         db_session.commit()
 
