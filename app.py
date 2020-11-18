@@ -170,8 +170,12 @@ def get_role_by_id(role_id):
     return _get_response(role.serialize(), 200, True)
 
 
-def get_user_by_email(email):
-    user = UserService.get_user_by_email(email)
+def get_user_by_email():
+    """
+    thi method returns the user givene the email in the POST request
+    """
+    json = request.get_json()
+    user = UserService.get_user_by_email(db_session, json["email"])
     if user is None:
         return _get_response("User not found", 404)
     return (user.serialize(), 200)
