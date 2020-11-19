@@ -156,3 +156,16 @@ class UserService:
         positive.marked = False
         db_session.commit()
         return True
+
+    @staticmethod
+    def user_is_positive(db_session, user_id: int) -> bool:
+        """
+        This method return is the user is positive on the table Positive
+        :param db_session: database session
+        :param user_id: user identifier
+        :return: is the user is positive on the table Positive, we will return True otherwise False
+        """
+        positive = db_session.query(Positive).filter_by(user_id=user_id).first()
+        if positive is None:
+            return False
+        return positive.markeds

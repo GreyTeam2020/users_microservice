@@ -327,7 +327,7 @@ class Test_Components:
         }
         user = UserService.create_user(db, json_create)
         assert user is not None
-        
+
         response = Utils.get_user_by_id(client, user.id)
         assert response.status_code == 200
         json = response.data.decode("utf-8")

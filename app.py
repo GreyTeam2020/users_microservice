@@ -89,7 +89,10 @@ def modify_user():
             current_app.logger.debug(
                 "User after modify operation \n{}".format(user.serialize())
             )
-            return _get_response(user.serialize(), 200, True)
+            is_positive = UserService.user_is_positive(db_session, user.id)
+            json_user = user.serialize()
+            json_user["is_positive"] = is_positive
+            return _get_response(json_user, 200, True)
         current_app.logger.debug("User is none? {}".format(user is None))
     return _get_response("Resource not found", 404)
 
@@ -125,7 +128,10 @@ def login_user():
             return _get_response(
                 "User with email {} not present".format(json["email"]), 404
             )
-        return _get_response(user.serialize(), 200, True)
+        is_positive = UserService.user_is_positive(db_session, user.id)
+        json_user = user.serialize()
+        json_user["is_positive"] = is_positive
+        return _get_response(json_user, 200, True)
     return _get_response("Resource not found", 404)
 
 
@@ -142,7 +148,10 @@ def user_is_present_by_email():
         user = UserService.user_is_present(db_session, email)
         if user is None:
             return _get_response("User not found", 404)
-        return _get_response(user.serialize(), 200, True)
+        is_positive = UserService.user_is_positive(db_session, user.id)
+        json_user = user.serialize()
+        json_user["is_positive"] = is_positive
+        return _get_response(json_user, 200, True)
     return _get_response("User not found", 404)
 
 
@@ -159,7 +168,10 @@ def user_is_present_by_phone():
         user = UserService.user_is_present(db_session, phone=phone)
         if user is None:
             return _get_response("User not found", 404)
-        return _get_response(user.serialize(), 200, True)
+        is_positive = UserService.user_is_positive(db_session, user.id)
+        json_user = user.serialize()
+        json_user["is_positive"] = is_positive
+        return _get_response(json_user, 200, True)
     return _get_response("User not found", 404)
 
 
@@ -178,7 +190,10 @@ def get_user_by_email():
     user = UserService.get_user_by_email(db_session, json["email"])
     if user is None:
         return _get_response("User not found", 404)
-    return _get_response(user.serialize(), 200, True)
+    is_positive = UserService.user_is_positive(db_session, user.id)
+    json_user = user.serialize()
+    json_user["is_positive"] = is_positive
+    return _get_response(json_user, 200, True)
 
 
 def get_user_by_id(id):
@@ -186,7 +201,10 @@ def get_user_by_id(id):
     if user is None:
         if user is None:
             return _get_response("User not found", 404)
-    return _get_response(user.serialize(), 200, True)
+    is_positive = UserService.user_is_positive(db_session, user.id)
+    json_user = user.serialize()
+    json_user["is_positive"] = is_positive
+    return _get_response(json_user, 200, True)
 
 
 # --------- END API definition --------------------------

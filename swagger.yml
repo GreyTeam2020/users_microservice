@@ -98,7 +98,7 @@ paths:
                 content:
                   application/json:
                     schema:
-                      $ref: '#/components/schemas/Result'
+                      $ref: '#/components/schemas/UserWithRole'
               404:
                 description: "user not found"
                 content:
@@ -135,7 +135,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Result'
+                $ref: '#/components/schemas/UserWithRole'
         404:
           description: "user not found"
           content:
@@ -172,7 +172,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserWithRole'
         404:
           description: "Resource don't found"
           content:
@@ -203,7 +203,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/UserWithRole'
         404:
           description: "User not found"
           content:
@@ -228,7 +228,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Result'
+                $ref: '#/components/schemas/UserWithRole'
         404:
           description: "Resource don't found"
           content:
@@ -376,6 +376,7 @@ components:
         - dateofbirth
         - role
         - id
+        - is_positive
       type: object
       properties:
         email:
@@ -419,6 +420,9 @@ components:
         id:
           type: integer
           example: 3
+        is_positive:
+          type: boolean
+          example: false
     Result:
       required:
         - result
