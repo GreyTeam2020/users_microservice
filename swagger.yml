@@ -319,6 +319,63 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
+  /user/unmark:
+    put:
+      tags:
+        - Positive
+      summary: Unmark a positive customer
+      operationId: app.unmark_a_positive_user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Unmark'
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /user/checkpositive/{key}/{value}:
+    get:
+      tags:
+        - Positive
+      summary: check if a customer is positive
+      operationId: app.check_user_is_positive
+      parameters:
+        - in: path
+          name: key
+          schema:
+            type: string
+          required: true
+          description: phone or email
+        - in: path
+          name: value
+          schema:
+            type: string
+          required: true
+          description: value of phone or email
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
 components:
   schemas:
     User:
@@ -542,6 +599,24 @@ components:
           id:
             type: integer
             example: 3
+    Unmark:
+      required:
+        - key
+        - value
+      type: object
+      properties:
+        key:
+          type: string
+          minLength: 5
+          maxLength: 5
+          description: "phone or email"
+          example: "email"
+        value:
+          type: string
+          minLength: 1
+          maxLength: 128
+          description: Phone or email
+          example: "example@email.com"
 
 
   
