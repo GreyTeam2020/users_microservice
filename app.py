@@ -226,6 +226,63 @@ def mark_positive(key, value):
     return _get_response(msg, 200, True)
 
 
+
+
+def unmark_a_positive_user():
+    body = request.get_json()
+    if body["key"] == "email":
+        user = UserService.get_user_by_email(db_session, body["value"])
+    elif body["key"] == "phone":
+        user = UserService.user_is_present(db_session = db_session, phone = body["value"])
+    else:
+        return _get_response("Bad Request", 400)
+
+    if user is None or user.role_id != 3:
+        return _get_response("The customer is not registered", 404, True)
+
+    if UserService.unmark_user_as_not_positive(db_session, user.id) is False:
+        return _get_response("The customer is not Covid-19 positive", 200, True)
+    else:
+        return _get_response("Ok", 200, True)
+
+
+def check_user_is_positive(key, value):
+    if key == "email":
+        user = UserService.get_user_by_email(db_session, value)
+    elif key == "phone":
+        user = UserService.user_is_present(db_session = db_session, phone = value)
+    else:
+        return _get_response("Bad Request", 400)
+
+    if user is None or user.role_id != 3:
+        return _get_response("The customer is not registered", 404, True)
+
+    positive = UserService.user_is_positive(db_session, user.id)
+    if positive is None:
+        return _get_response("Not positive", 200, True)
+    else:
+        return _get_response("Positive", 200, True)
+
+
+def get_positive_info(key, value):
+    if key == "email":
+        user = UserService.get_user_by_email(db_session, value)
+    elif key == "phone":
+        user = UserService.user_is_present(db_session = db_session, phone = value)
+    else:
+        return _get_response("Bad Request", 400)
+
+    if user is None or user.role_id != 3:
+        return _get_response("The customer is not registered", 404, True)
+
+    positive = UserService.user_is_positive(db_session, user.id)
+    if positive is None:
+        return _get_response("Information not found", 404, True)
+    else:
+        return _get_response(positive.serialize(), 200, True)
+
+
+
 # --------- END API definition --------------------------
 logging.basicConfig(level=logging.DEBUG)
 app = connexion.App(__name__)

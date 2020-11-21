@@ -1,6 +1,6 @@
 import logging
 from datetime import datetime
-from database import User, Role, Positive, Reservation
+from database import User, Role, Positive
 
 
 class UserService:
@@ -154,9 +154,13 @@ class UserService:
         :param db_session:
         :return: a boolean value as result
         """
-        positive = db_session.query(Positive).filter_by(user_id=user_id).first()
+        positive = db_session.query(Positive).filter_by(
+            user_id = user_id,
+            marked = True
+        ).first()
         if positive is None:
             return False
+
         positive.marked = False
         db_session.commit()
         return True
@@ -169,10 +173,13 @@ class UserService:
         :param user_id: user identifier
         :return: is the user is positive on the table Positive, we will return True otherwise False
         """
-        positive = db_session.query(Positive).filter_by(user_id=user_id).first()
-        if positive is None:
-            return False
-        return positive.markeds
+        positive = db_session.query(Positive).filter_by(
+            user_id = user_id,
+            marked = True
+        ).first()
+
+        return positive
+
 
     @staticmethod
     def report_positive(db_session):
