@@ -344,6 +344,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
+        404:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
   /user/checkpositive/{key}/{value}:
     get:
       tags:
@@ -371,6 +377,50 @@ paths:
               schema:
                 $ref: '#/components/schemas/Result'
         400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        404:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+  /user/positiveinfo/{key}/{value}:
+    get:
+      tags:
+        - Positive
+      summary: check if a customer is positive
+      operationId: app.get_positive_info
+      parameters:
+        - in: path
+          name: key
+          schema:
+            type: string
+          required: true
+          description: phone or email
+        - in: path
+          name: value
+          schema:
+            type: string
+          required: true
+          description: value of phone or email
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Positive'
+        400:
+          description: "Resource don't found"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Result'
+        404:
           description: "Resource don't found"
           content:
             application/json:
@@ -617,6 +667,33 @@ components:
           maxLength: 128
           description: Phone or email
           example: "example@email.com"
+    Positive:
+      required:
+        - id
+        - from_date
+        - marked
+        - user_id
+      type: object
+      properties:
+        id:
+          type: integer
+          minimum: 1
+          description: id of the user
+          example: 4
+        from_date:
+          type: string
+          format: date
+          description: date of marked as positive
+          example: "YYYY-MM-DD"
+        marked:
+          type: boolean
+          description: "true if customer is positive, false otherwise"
+          example: true
+        user_id:
+          type: integer
+          minimum: 1
+          description: id of the user
+          example: 3
 
 
   

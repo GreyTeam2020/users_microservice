@@ -219,7 +219,7 @@ def unmark_a_positive_user():
         return _get_response("Bad Request", 400)
 
     if user is None or user.role_id != 3:
-        return _get_response("The customer is not registered", 200, True)
+        return _get_response("The customer is not registered", 404, True)
 
     if UserService.unmark_user_as_not_positive(db_session, user.id) is False:
         return _get_response("The customer is not Covid-19 positive", 200, True)
@@ -236,12 +236,32 @@ def check_user_is_positive(key, value):
         return _get_response("Bad Request", 400)
 
     if user is None or user.role_id != 3:
-        return _get_response("The customer is not registered", 200, True)
+        return _get_response("The customer is not registered", 404, True)
 
-    if UserService.user_is_positive(db_session, user.id) is False:
+    positive = UserService.user_is_positive(db_session, user.id)
+    if positive is None:
         return _get_response("Not positive", 200, True)
     else:
-        return _get_response(str(user.id), 200, True)
+        return _get_response("Positive", 200, True)
+
+
+def get_positive_info(key, value):
+    if key == "email":
+        user = UserService.get_user_by_email(db_session, value)
+    elif key == "phone":
+        user = UserService.user_is_present(db_session = db_session, phone = value)
+    else:
+        return _get_response("Bad Request", 400)
+
+    if user is None or user.role_id != 3:
+        return _get_response("The customer is not registered", 404, True)
+
+    positive = UserService.user_is_positive(db_session, user.id)
+    if positive is None:
+        return _get_response("Information not found", 404, True)
+    else:
+        return _get_response(positive.serialize(), 200, True)
+
 
 
 # --------- END API definition --------------------------

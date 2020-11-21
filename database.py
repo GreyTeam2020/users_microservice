@@ -86,6 +86,8 @@ class Positive(db):
     user_id = Column(Integer, ForeignKey("user.id"))
     user = relationship("User", foreign_keys="Positive.user_id")
 
+    def serialize(self):
+        return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
 
 def init_db(uri):
     engine = create_engine(uri)
