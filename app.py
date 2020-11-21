@@ -230,53 +230,56 @@ def unmark_a_positive_user():
     body = request.get_json()
     # TODO: passare user_email e user_phone al service, la query dell'utente si fa con il metodo che prende entrambi email e phone
     if body["key"] == "email":
-        user = UserService.get_user_by_email(db_session, body["value"])
+        user_email = body["value"]
     elif body["key"] == "phone":
-        user = UserService.user_is_present(db_session = db_session, phone = body["value"])
+        user_phone = body["value"]
     else:
         return _get_response("Bad Request", 400)
 
+    user = UserService.user_is_present(db_session, user_email, user_phone)
     if user is None or user.role_id != 3:
-        return _get_response("The customer is not registered", 404, True)
+        return _get_response("User not found", 404)
 
     if UserService.unmark_user_as_not_positive(db_session, user.id) is False:
-        return _get_response("The customer is not Covid-19 positive", 200, True)
+        return _get_response("User not positive", 404)
     else:
-        return _get_response("Ok", 200, True)
+        return _get_response("Ok", 200)
 
 
 def check_user_is_positive(key, value):
     if key == "email":
-        user = UserService.get_user_by_email(db_session, value)
+        user_email = value
     elif key == "phone":
-        user = UserService.user_is_present(db_session = db_session, phone = value)
+        user_phone = value
     else:
         return _get_response("Bad Request", 400)
 
+    user = UserService.user_is_present(db_session, user_email, user_phone)
     if user is None or user.role_id != 3:
-        return _get_response("The customer is not registered", 404, True)
+        return _get_response("User not found", 404)
 
     positive = UserService.user_is_positive(db_session, user.id)
     if positive is None:
-        return _get_response("Not positive", 200, True)
+        return _get_response("Not positive", 200)
     else:
-        return _get_response("Positive", 200, True)
+        return _get_response("Positive", 200)
 
 
 def get_positive_info(key, value):
     if key == "email":
-        user = UserService.get_user_by_email(db_session, value)
+        user_email = value
     elif key == "phone":
-        user = UserService.user_is_present(db_session = db_session, phone = value)
+        user_phone = value
     else:
         return _get_response("Bad Request", 400)
 
+    user = UserService.user_is_present(db_session, user_email, user_phone)
     if user is None or user.role_id != 3:
-        return _get_response("The customer is not registered", 404, True)
+        return _get_response("User not found", 404)
 
     positive = UserService.user_is_positive(db_session, user.id)
     if positive is None:
-        return _get_response("Information not found", 404, True)
+        return _get_response("Information not found", 404)
     else:
         return _get_response(positive.serialize(), 200, True)
 
