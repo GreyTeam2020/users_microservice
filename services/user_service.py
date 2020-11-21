@@ -139,6 +139,7 @@ class UserService:
         :return: a boolean value as result
         """
         user = UserService.user_is_present(db_session, user_email, user_phone)
+
         new_positive = Positive()
         new_positive.from_date = datetime.now()
         new_positive.marked = True
