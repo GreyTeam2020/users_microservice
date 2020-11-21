@@ -339,3 +339,71 @@ class Test_Components:
         Utils.del_user_on_db_with_id(db, user.id)
         user = Utils.get_user_on_db_with_email(db, json_create["email"])
         assert user is None
+
+
+
+
+
+    def test_unmark_positive_customer_email(self, client, db):
+        """
+        To test unmark of a positive customer
+        """
+        
+        
+        #mark a user as a positive
+        #unmark user by email (key = email)
+        #check the user is not positive
+        pass
+
+    def test_unmark_positive_customer_phone(self, client, db):
+        
+        #mark a user as a positive
+        #unmark user by phone (key=phone)
+        #check the user is not positive
+        pass
+
+    def test_unmark_positive_customer_wrong_key(self, client, db):
+        """
+        To test unmark of a customer using a wronk key
+        """
+        body ={
+            "key": "wrong",
+            "value": "example@email.com"
+        }
+
+        response = client.put(
+            "/user/unmark", json=body, follow_redirects=True
+        )
+        assert response.status_code == 400
+        json_data = response.json
+        assert json_data["result"] == "Bad Request"
+
+    def test_unmark_positive_customer_wrong_value(self, client, db):
+        pass
+
+    def test_unmark_customer_that_not_exists(self, client, db):
+       
+        pass
+
+    def test_unmark_a_not_customer(self, client, db):
+       
+        pass
+
+    def test_unmark_a_not_positive(self, client, db):
+       
+        pass
+
+    def test_check_a_not_positive_customer(self, client, db):
+       
+        pass
+
+    def test_check_a_positive_customer(self, client, db):
+        
+        pass
+
+
+    def test_info_not_positive_customer(self, client, db):
+        pass
+
+    def test_info_positive_customer(self, client, db):
+        pass
