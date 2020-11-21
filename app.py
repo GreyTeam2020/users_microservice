@@ -6,7 +6,6 @@ import logging
 from flask import request, jsonify, current_app
 from services.user_service import UserService
 
-
 db_session = None
 
 
@@ -205,6 +204,26 @@ def get_user_by_id(id):
     json_user = user.serialize()
     json_user["is_positive"] = is_positive
     return _get_response(json_user, 200, True)
+
+
+###
+# for healty authority
+###
+def report_positive():
+    users = UserService.report_positive()
+    json_users = users.serialize()
+    return _get_response(json_users, 200, True)
+
+
+def mark_positive(key, value):
+    if key == 'email':
+        user_email = value
+    elif key == 'phone':
+        user_phone = value
+    else:
+        return _get_response("Only email or phone allowed", 405, True)
+    msg = UserService.mark_user_as_positive(db_session, user_email, user_phone)
+    return _get_response(msg, 200, True)
 
 
 # --------- END API definition --------------------------
