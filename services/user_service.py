@@ -128,17 +128,22 @@ class UserService:
         """
         return db_session.query(User).filter_by(id=user_id).first()
 
+    ###
+    # for healty authority
+    ###
     @staticmethod
-    def mark_user_as_positive(db_session, user_id: int) -> bool:
+    def mark_user_as_positive(db_session, user_email: str, user_phone: str) -> bool:
         """
         This method is user to mark the user as positive
         :param db_session:
         :return: a boolean value as result
         """
+        user = UserService.user_is_present(db_session, user_email, user_phone)
+
         new_positive = Positive()
         new_positive.from_date = datetime.now()
         new_positive.marked = True
-        new_positive.user_id = user_id
+        new_positive.user_id = user.user_id
         db_session.add(new_positive)
         db_session.commit()
         return True
@@ -156,7 +161,7 @@ class UserService:
         ).first()
         if positive is None:
             return False
-            
+
         positive.marked = False
         db_session.commit()
         return True
@@ -173,6 +178,19 @@ class UserService:
             user_id = user_id,
             marked = True
         ).first()
-        
+
         return positive
-        
+
+
+    @staticmethod
+    def report_positive(db_session):
+        users = (
+            db_session.query(User).filter(
+                #TODO: mettere filterby
+                User.email != "admin@gooutsafe.com",
+                User.email != "health_authority@gov.com",
+                User.id == Positive.user_id,
+                Positive.marked is True,
+            ).all()
+        )
+        return users

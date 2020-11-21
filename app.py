@@ -6,7 +6,6 @@ import logging
 from flask import request, jsonify, current_app
 from services.user_service import UserService
 
-
 db_session = None
 
 
@@ -207,10 +206,29 @@ def get_user_by_id(id):
     return _get_response(json_user, 200, True)
 
 
+###
+# for healty authority
+###
+def report_positive():
+    users = UserService.report_positive()
+    json_users = users.serialize()
+    return _get_response(json_users, 200, True)
+
+
+def mark_positive(key, value):
+    if key == 'email':
+        user_email = value
+    elif key == 'phone':
+        user_phone = value
+    else:
+        return _get_response("Bad Request", 400)
+    result = UserService.mark_user_as_positive(db_session, user_email, user_phone)
+    return _get_response(result, 200, True)
 
 
 def unmark_a_positive_user():
     body = request.get_json()
+    # TODO: passare user_email e user_phone al service, la query dell'utente si fa con il metodo che prende entrambi email e phone
     if body["key"] == "email":
         user = UserService.get_user_by_email(db_session, body["value"])
     elif body["key"] == "phone":
