@@ -143,7 +143,7 @@ class UserService:
         new_positive = Positive()
         new_positive.from_date = datetime.now()
         new_positive.marked = True
-        new_positive.user_id = user.user_id
+        new_positive.user_id = user.id
         db_session.add(new_positive)
         db_session.commit()
         return True

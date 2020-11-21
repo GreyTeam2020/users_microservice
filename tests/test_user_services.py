@@ -254,7 +254,7 @@ class Test_UserServices:
         assert user is not None
         assert user.role_id is 3
 
-        success_mark = UserService.mark_user_as_positive(db, user.id)
+        success_mark = UserService.mark_user_as_positive(db, json["email"], json["phone"])
         assert success_mark is True
 
         Utils.del_user_on_db_with_id(db, user.id)
@@ -277,7 +277,7 @@ class Test_UserServices:
         assert user is not None
         assert user.role_id is 3
 
-        success_mark = UserService.mark_user_as_positive(db, user.id)
+        success_mark = UserService.mark_user_as_positive(db, json["email"], json["phone"])
         assert success_mark is True
 
         success_unmark = UserService.unmark_user_as_not_positive(db, user.id)
