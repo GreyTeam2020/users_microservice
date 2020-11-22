@@ -21,8 +21,10 @@ def _get_response(message: str, code: int, is_custom_obj: bool = False):
         return {"result": message}, code
     return message, code
 
+
 def serialize(obj):
     return dict([(k, v) for k, v in obj.__dict__.items() if k[0] != "_"])
+
 
 # time objects are not serializeble in JSON so they are changed in strings
 def JSON_serialization(obj_dict):
@@ -34,6 +36,7 @@ def JSON_serialization(obj_dict):
         elif str(type(value)) == "<class 'decimal.Decimal'>":
             obj_dict.update({key: float(value)})
     return obj_dict
+
 
 def list_obj_json(name_list, list_objs):
     objects = []
@@ -241,10 +244,10 @@ def report_positive():
 
 
 def mark_positive(key, value):
-    if key == 'email':
+    if key == "email":
         user_email = value
         user_phone = None
-    elif key == 'phone':
+    elif key == "phone":
         user_phone = value
         user_email = None
     else:
@@ -255,15 +258,13 @@ def mark_positive(key, value):
 
 def unmark_a_positive_user():
     body = request.get_json()
-    # TODO: passare user_email e user_phone al service, la query dell'utente si fa con il metodo che prende entrambi email e phone
     if body["key"] == "email":
-        user_email = body["value"]
+        user = UserService.user_is_present(db_session=db_session, email=body["value"])
     elif body["key"] == "phone":
-        user_phone = body["value"]
+        user = UserService.user_is_present(db_session=db_session, phone=body["value"])
     else:
         return _get_response("Bad Request", 400)
 
-    user = UserService.user_is_present(db_session, user_email, user_phone)
     if user is None or user.role_id != 3:
         return _get_response("User not found", 404)
 
@@ -275,13 +276,12 @@ def unmark_a_positive_user():
 
 def check_user_is_positive(key, value):
     if key == "email":
-        user_email = value
+        user = UserService.user_is_present(db_session=db_session, email=value)
     elif key == "phone":
-        user_phone = value
+        user = UserService.user_is_present(db_session=db_session, phone=value)
     else:
         return _get_response("Bad Request", 400)
 
-    user = UserService.user_is_present(db_session, user_email, user_phone)
     if user is None or user.role_id != 3:
         return _get_response("User not found", 404)
 
@@ -294,13 +294,12 @@ def check_user_is_positive(key, value):
 
 def get_positive_info(key, value):
     if key == "email":
-        user_email = value
+        user = UserService.user_is_present(db_session=db_session, email=value)
     elif key == "phone":
-        user_phone = value
+        user = UserService.user_is_present(db_session=db_session, phone=value)
     else:
         return _get_response("Bad Request", 400)
 
-    user = UserService.user_is_present(db_session, user_email, user_phone)
     if user is None or user.role_id != 3:
         return _get_response("User not found", 404)
 
@@ -309,7 +308,6 @@ def get_positive_info(key, value):
         return _get_response("Information not found", 404)
     else:
         return _get_response(positive.serialize(), 200, True)
-
 
 
 # --------- END API definition --------------------------

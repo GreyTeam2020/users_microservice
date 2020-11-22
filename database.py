@@ -89,6 +89,7 @@ class Positive(db):
     def serialize(self):
         return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
 
+
 def init_db(uri):
     engine = create_engine(uri)
     db_session = scoped_session(
@@ -96,7 +97,7 @@ def init_db(uri):
     )
     db.query = db_session.query_property()
     db.metadata.create_all(bind=engine)
-
+    """
     q = db_session.query(User).filter(User.email == "john.doe@email.com")
     user = q.first()
     if user is None:
@@ -110,7 +111,7 @@ def init_db(uri):
         first_customer.role_id = 3
         db_session.add(first_customer)
         db_session.commit()
-
+    """
 
     # create the user roles
     q = db_session.query(Role).filter(Role.id == 1)
