@@ -182,7 +182,7 @@ class Test_UserServices:
         json = Utils.get_json_about_new_user()
         json["role"] = 3
         json["firstname"] = "Bart"
-        json["id"] = 1
+        json["id"] = 20
         user = UserService.modify_user(db, json)
         assert user is None
 
