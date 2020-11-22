@@ -89,6 +89,7 @@ class Positive(db):
     def serialize(self):
         return dict([(k, v) for k, v in self.__dict__.items() if k[0] != "_"])
 
+
 def init_db(uri):
     engine = create_engine(uri)
     db_session = scoped_session(

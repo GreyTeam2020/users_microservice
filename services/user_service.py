@@ -155,10 +155,9 @@ class UserService:
         :param db_session:
         :return: a boolean value as result
         """
-        positive = db_session.query(Positive).filter_by(
-            user_id = user_id,
-            marked = True
-        ).first()
+        positive = (
+            db_session.query(Positive).filter_by(user_id=user_id, marked=True).first()
+        )
         if positive is None:
             return False
 
@@ -174,23 +173,22 @@ class UserService:
         :param user_id: user identifier
         :return: is the user is positive on the table Positive, we will return True otherwise False
         """
-        positive = db_session.query(Positive).filter_by(
-            user_id = user_id,
-            marked = True
-        ).first()
+        positive = (
+            db_session.query(Positive).filter_by(user_id=user_id, marked=True).first()
+        )
 
         return positive
-
 
     @staticmethod
     def report_positive(db_session):
         users = (
-            db_session.query(User).filter(
-                #TODO: mettere filterby
+            db_session.query(User)
+            .filter(
                 User.email != "admin@gooutsafe.com",
                 User.email != "health_authority@gov.com",
                 User.id == Positive.user_id,
-                Positive.marked is True,
-            ).all()
+                Positive.marked == 1,
+            )
+            .all()
         )
         return users
