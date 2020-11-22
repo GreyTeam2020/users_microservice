@@ -186,11 +186,10 @@ class UserService:
     def report_positive(db_session):
         users = (
             db_session.query(User).filter(
-                #TODO: mettere filterby
                 User.email != "admin@gooutsafe.com",
                 User.email != "health_authority@gov.com",
                 User.id == Positive.user_id,
-                Positive.marked is True,
+                Positive.marked == 1
             ).all()
         )
         return users

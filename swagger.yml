@@ -350,6 +350,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
+  /user/mark/{key}/{value}:
+    get:
+      tags:
+        - Positive
+      summary: mark
+      operationId: app.mark_positive
+      parameters:
+        - in: path
+          name: key
+          schema:
+            type: string
+          required: true
+          description: phone or email
+        - in: path
+          name: value
+          schema:
+            type: string
+          required: true
+          description: value of phone or email
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Positive'
   /user/checkpositive/{key}/{value}:
     get:
       tags:
@@ -426,6 +452,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Result'
+  /user/report_positive:
+    get:
+      tags:
+        - Positive
+      summary: return list of positive
+      operationId: app.report_positive
+      responses:
+        200:
+          description: "The operation is done"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
 components:
   schemas:
     User:

@@ -5,6 +5,7 @@ from database import init_db
 import logging
 from flask import request, jsonify, current_app
 from services.user_service import UserService
+import json
 
 db_session = None
 
@@ -19,6 +20,30 @@ def _get_response(message: str, code: int, is_custom_obj: bool = False):
     if is_custom_obj is False:
         return {"result": message}, code
     return message, code
+
+def serialize(obj):
+    return dict([(k, v) for k, v in obj.__dict__.items() if k[0] != "_"])
+
+# time objects are not serializeble in JSON so they are changed in strings
+def JSON_serialization(obj_dict):
+    for key, value in obj_dict.items():
+        if str(type(value)) == "<class 'datetime.time'>":
+            obj_dict.update({key: value.strftime("%H:%M")})
+        elif str(type(value)) == "<class 'datetime.datetime'>":
+            obj_dict.update({key: value.strftime("%Y-%m-%dT%H:%M:%SZ")})
+        elif str(type(value)) == "<class 'decimal.Decimal'>":
+            obj_dict.update({key: float(value)})
+    return obj_dict
+
+def list_obj_json(name_list, list_objs):
+    objects = []
+    for obj in list_objs:
+        objects.append(JSON_serialization(serialize(obj)))
+    if len(name_list) == 0:
+        return objects
+    else:
+        list_json = json.dumps({name_list: objects})
+        return json.loads(list_json)
 
 
 def create_user():
@@ -210,16 +235,18 @@ def get_user_by_id(id):
 # for healty authority
 ###
 def report_positive():
-    users = UserService.report_positive()
-    json_users = users.serialize()
+    users = UserService.report_positive(db_session)
+    json_users = list_obj_json("users", users)
     return _get_response(json_users, 200, True)
 
 
 def mark_positive(key, value):
     if key == 'email':
         user_email = value
+        user_phone = None
     elif key == 'phone':
         user_phone = value
+        user_email = None
     else:
         return _get_response("Bad Request", 400)
     result = UserService.mark_user_as_positive(db_session, user_email, user_phone)
