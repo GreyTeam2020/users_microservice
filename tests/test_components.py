@@ -349,7 +349,6 @@ class Test_Components:
         To test unmark of a positive customer
         """
         
-        
         #mark a user as a positive
         #unmark user by email (key = email)
         #check the user is not positive
