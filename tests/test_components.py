@@ -341,26 +341,6 @@ class Test_Components:
         assert user is None
 
 
-
-
-
-    def test_unmark_positive_customer_email(self, client, db):
-        """
-        To test unmark of a positive customer
-        """
-        
-        #mark a user as a positive
-        #unmark user by email (key = email)
-        #check the user is not positive
-        pass
-
-    def test_unmark_positive_customer_phone(self, client, db):
-        
-        #mark a user as a positive
-        #unmark user by phone (key=phone)
-        #check the user is not positive
-        pass
-
     def test_unmark_positive_customer_wrong_key(self, client, db):
         """
         To test unmark of a customer using a wronk key
@@ -369,7 +349,6 @@ class Test_Components:
             "key": "wrong",
             "value": "example@email.com"
         }
-
         response = client.put(
             "/user/unmark", json=body, follow_redirects=True
         )
@@ -377,32 +356,291 @@ class Test_Components:
         json_data = response.json
         assert json_data["result"] == "Bad Request"
 
-    def test_unmark_positive_customer_wrong_value(self, client, db):
-        pass
+
+    def test_unmark_positive_customer_wrong_value_email(self, client, db):
+        body ={
+            "key": "email",
+            "value": "abcdefg3"
+        }
+        response = client.put(
+            "/user/unmark", json=body, follow_redirects=True
+        )
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["result"] == "User not found"
+
+
+    def test_unmark_positive_customer_wrong_value_phone(self, client, db):
+        body ={
+            "key": "phone",
+            "value": "abcdefg3"
+        }
+        response = client.put(
+            "/user/unmark", json=body, follow_redirects=True
+        )
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["result"] == "User not found"
+
 
     def test_unmark_customer_that_not_exists(self, client, db):
-       
-        pass
+        body ={
+            "key": "email",
+            "value": "example@email.com"
+        }
+
+        response = client.put(
+            "/user/unmark", json=body, follow_redirects=True
+        )
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["result"] == "User not found"
+
+    def test_unmark_positive_customer_email(self, client, db):
+        """
+        To test unmark of a positive customer
+        """
+
+        json_create = {
+            "firstname": "Bobby",
+            "lastname": "Bishop",
+            "password": "bobbyb",
+            "phone": "123456789",
+            "dateofbirth": "1985-05-19",
+            "email": "bobbyb@email.com",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+        response = UserService.mark_user_as_positive(db, user.email, "")
+        assert response is True
+
+        body = {
+            "key": "email",
+            "value": user.email
+        }
+        response = client.put(
+            "/user/unmark", json=body, follow_redirects=True
+        )
+        positive = UserService.user_is_positive(db, user.id)
+        assert positive is None
+
+        Utils.del_user_on_db_with_id(db, user.id)
+        
+
+    def test_unmark_positive_customer_phone(self, client, db):
+        
+        json_create = {
+            "firstname": "Bobby",
+            "lastname": "Bishop",
+            "password": "bobbyb",
+            "phone": "123456789",
+            "dateofbirth": "1985-05-19",
+            "email": "bobbyb@email.com",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+        response = UserService.mark_user_as_positive(db, "", user.phone)
+        assert response is True
+
+        body = {
+            "key": "phone",
+            "value": user.phone
+        }
+        response = client.put(
+            "/user/unmark", json=body, follow_redirects=True
+        )
+        positive = UserService.user_is_positive(db, user.id)
+        assert positive is None
+
+        Utils.del_user_on_db_with_id(db, user.id)
 
     def test_unmark_a_not_customer(self, client, db):
        
-        pass
+        json_create = {
+            "firstname": "Bobby",
+            "lastname": "Bishop",
+            "password": "bobbyb",
+            "phone": "123456789",
+            "dateofbirth": "1985-05-19",
+            "email": "bobbyb@email.com",
+        }
+        user = UserService.create_user(db, json_create, 2)
+        assert user is not None
+
+        body = {
+            "key": "email",
+            "value": user.email
+        }
+        response = client.put(
+            "/user/unmark", json=body, follow_redirects=True
+        )
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["result"] == "User not found"
+
+        Utils.del_user_on_db_with_id(db, user.id)
 
     def test_unmark_a_not_positive(self, client, db):
        
-        pass
+        json_create = {
+            "firstname": "Bobby",
+            "lastname": "Bishop",
+            "password": "bobbyb",
+            "phone": "123456789",
+            "dateofbirth": "1985-05-19",
+            "email": "bobbyb@email.com",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+
+        body = {
+            "key": "email",
+            "value": user.email
+        }
+        response = client.put(
+            "/user/unmark", json=body, follow_redirects=True
+        )
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["result"] == "User not positive"
+
+        Utils.del_user_on_db_with_id(db, user.id)
+
 
     def test_check_a_not_positive_customer(self, client, db):
        
-        pass
+        json_create = {
+            "firstname": "Bobby",
+            "lastname": "Bishop",
+            "password": "bobbyb",
+            "phone": "123456789",
+            "dateofbirth": "1985-05-19",
+            "email": "bobbyb@email.com",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
 
-    def test_check_a_positive_customer(self, client, db):
+        response = client.get(
+            "/user/checkpositive/email/"+str(user.email), follow_redirects=True
+        )
+
+        assert response.status_code == 200
+        json_data = response.json
+        assert json_data["result"] == "Not positive"
+
+        Utils.del_user_on_db_with_id(db, user.id)
+
+
+    def test_check_a_positive_customer_email(self, client, db):
         
-        pass
+        json_create = {
+            "firstname": "Bobby",
+            "lastname": "Bishop",
+            "password": "bobbyb",
+            "phone": "123456789",
+            "dateofbirth": "1985-05-19",
+            "email": "bobbyb@email.com",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+        response = UserService.mark_user_as_positive(db, user.email, "")
+        assert response is True
 
+        response = client.get(
+            "/user/checkpositive/email/"+str(user.email), follow_redirects=True
+        )
+
+        assert response.status_code == 200
+        json_data = response.json
+        assert json_data["result"] == "Positive"
+
+        Utils.del_user_on_db_with_id(db, user.id)
+
+    def test_check_a_positive_customer_phone(self, client, db):
+        
+        json_create = {
+            "firstname": "Bobby",
+            "lastname": "Bishop",
+            "password": "bobbyb",
+            "phone": "123456789",
+            "dateofbirth": "1985-05-19",
+            "email": "bobbyb@email.com",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+        response = UserService.mark_user_as_positive(db, "", user.phone)
+        assert response is True
+
+        response = client.get(
+            "/user/checkpositive/phone/"+str(user.phone), follow_redirects=True
+        )
+
+        assert response.status_code == 200
+        json_data = response.json
+        assert json_data["result"] == "Positive"
+
+        Utils.del_user_on_db_with_id(db, user.id)
 
     def test_info_not_positive_customer(self, client, db):
-        pass
+        json_create = {
+            "firstname": "Bobby",
+            "lastname": "Bishop",
+            "password": "bobbyb",
+            "phone": "123456789",
+            "dateofbirth": "1985-05-19",
+            "email": "bobbyb@email.com",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
 
-    def test_info_positive_customer(self, client, db):
-        pass
+        response = client.get(
+            "/user/positiveinfo/email/"+str(user.email), follow_redirects=True
+        )
+
+        assert response.status_code == 404
+        json_data = response.json
+        assert json_data["result"] == "Information not found"
+
+        Utils.del_user_on_db_with_id(db, user.id)
+
+    def test_info_positive_customer_email(self, client, db):
+        json_create = {
+            "firstname": "Bobby",
+            "lastname": "Bishop",
+            "password": "bobbyb",
+            "phone": "123456789",
+            "dateofbirth": "1985-05-19",
+            "email": "bobbyb@email.com",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+        response = UserService.mark_user_as_positive(db, user.email, "")
+        assert response is True
+
+        response = client.get(
+            "/user/positiveinfo/email/"+str(user.email), follow_redirects=True
+        )
+        assert response.status_code == 200
+
+        Utils.del_user_on_db_with_id(db, user.id)
+
+    def test_info_positive_customer_phone(self, client, db):
+        json_create = {
+            "firstname": "Bobby",
+            "lastname": "Bishop",
+            "password": "bobbyb",
+            "phone": "123456789",
+            "dateofbirth": "1985-05-19",
+            "email": "bobbyb@email.com",
+        }
+        user = UserService.create_user(db, json_create)
+        assert user is not None
+        response = UserService.mark_user_as_positive(db, "", user.phone)
+        assert response is True
+
+        response = client.get(
+            "/user/positiveinfo/phone/"+str(user.phone), follow_redirects=True
+        )
+        assert response.status_code == 200
+
+        Utils.del_user_on_db_with_id(db, user.id)
