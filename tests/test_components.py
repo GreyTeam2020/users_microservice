@@ -186,7 +186,7 @@ class Test_Components:
             "email": "alibaba@alibaba.it",
         }
         json["role"] = 3
-        json["id"] = 1
+        json["id"] = 20
 
         response = Utils.modify_user(client, json)
         assert response.status_code == 404
@@ -231,7 +231,7 @@ class Test_Components:
         :param client: flask test client
         :param db: database session
         """
-        response = Utils.delete_user(client, 1)
+        response = Utils.delete_user(client, 20)
         assert response.status_code == 404
         assert "User doesn't exist" in response.data.decode("utf-8")
 

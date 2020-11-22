@@ -97,7 +97,7 @@ def init_db(uri):
     )
     db.query = db_session.query_property()
     db.metadata.create_all(bind=engine)
-    """
+    
     q = db_session.query(User).filter(User.email == "john.doe@email.com")
     user = q.first()
     if user is None:
@@ -111,7 +111,49 @@ def init_db(uri):
         first_customer.role_id = 3
         db_session.add(first_customer)
         db_session.commit()
-    """
+
+    q = db_session.query(User).filter(User.email == "ham.burger@email.com")
+    user = q.first()
+    if user is None:
+        first_operator = User()
+        first_operator.firstname = "Ham"
+        first_operator.lastname = "Burger"
+        first_operator.email = "ham.burger@email.com"
+        first_operator.phone = "222333567"
+        first_operator.is_admin = False
+        first_operator.set_password("operator")
+        first_operator.role_id = 2
+        db_session.add(first_operator)
+        db_session.commit()
+
+    q = db_session.query(User).filter(User.email == "nick.miller@email.com")
+    user = q.first()
+    if user is None:
+        second_operator = User()
+        second_operator.firstname = "Nick"
+        second_operator.lastname = "Miller"
+        second_operator.email = "nick.miller@email.com"
+        second_operator.phone = "119385729"
+        second_operator.is_admin = False
+        second_operator.set_password("nickmiller")
+        second_operator.role_id = 2
+        db_session.add(second_operator)
+        db_session.commit()
+
+    q = db_session.query(User).filter(User.email == "health_authority@gov.com")
+    user = q.first()
+    if user is None:
+        health_authority = User()
+        health_authority.firstname = "Health"
+        health_authority.lastname = "Authority"
+        health_authority.email = "health_authority@gov.com"
+        health_authority.phone = "321456783"
+        health_authority.is_admin = False
+        health_authority.set_password("nocovid")
+        health_authority.role_id = 4
+        db_session.add(health_authority)
+        db_session.commit()
+    
 
     # create the user roles
     q = db_session.query(Role).filter(Role.id == 1)
