@@ -684,7 +684,7 @@ components:
           type: string
           format: date
           description: date of marked as positive
-          example: "YYYY-MM-DD"
+          example: "2020-05-14T20:30:00Z"
         marked:
           type: boolean
           description: "true if customer is positive, false otherwise"
