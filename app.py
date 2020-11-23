@@ -157,7 +157,10 @@ def login_user():
             )
         is_positive = UserService.user_is_positive(db_session, user.id)
         json_user = user.serialize()
-        json_user["is_positive"] = is_positive
+        if is_positive is None:
+            json_user["is_positive"] = False
+        else:
+            json_user["is_positive"] = True
         return _get_response(json_user, 200, True)
     return _get_response("Resource not found", 404)
 
