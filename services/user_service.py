@@ -106,6 +106,7 @@ class UserService:
 
     @staticmethod
     def delete_user(db_session, user_id: int):
+        db_session.query(Positive).filter_by(user_id=user_id).delete()
         db_session.query(User).filter_by(id=user_id).delete()
         db_session.commit()
         return True
