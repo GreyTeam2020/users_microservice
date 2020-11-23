@@ -268,7 +268,9 @@ def mark_positive(key, value):
     else:
         return _get_response("Bad Request", 400)
     result = UserService.mark_user_as_positive(db_session, user_email, user_phone)
-    return _get_response(result, 200, True)
+    if result is False:
+        return _get_response("User already positive", 409)
+    return _get_response("OK", 200)
 
 
 def unmark_a_positive_user():
