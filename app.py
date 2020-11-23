@@ -118,7 +118,10 @@ def modify_user():
             )
             is_positive = UserService.user_is_positive(db_session, user.id)
             json_user = user.serialize()
-            json_user["is_positive"] = is_positive
+            if is_positive is None:
+                json_user["is_positive"] = False
+            else:
+                json_user["is_positive"] = True
             return _get_response(json_user, 200, True)
         current_app.logger.debug("User is none? {}".format(user is None))
     return _get_response("Resource not found", 404)
@@ -168,7 +171,7 @@ def login_user():
 def user_is_present_by_email():
     """
     This method perform the research of the user by email
-    :return: :return: the correct response.
+    :return: the correct response.
     """
     if request.method == "POST":
         json = request.get_json()
@@ -180,7 +183,10 @@ def user_is_present_by_email():
             return _get_response("User not found", 404)
         is_positive = UserService.user_is_positive(db_session, user.id)
         json_user = user.serialize()
-        json_user["is_positive"] = is_positive
+        if is_positive is None:
+            json_user["is_positive"] = False
+        else:
+            json_user["is_positive"] = True
         return _get_response(json_user, 200, True)
     return _get_response("User not found", 404)
 
@@ -200,7 +206,10 @@ def user_is_present_by_phone():
             return _get_response("User not found", 404)
         is_positive = UserService.user_is_positive(db_session, user.id)
         json_user = user.serialize()
-        json_user["is_positive"] = is_positive
+        if is_positive is None:
+            json_user["is_positive"] = False
+        else:
+            json_user["is_positive"] = True
         return _get_response(json_user, 200, True)
     return _get_response("User not found", 404)
 
@@ -222,7 +231,10 @@ def get_user_by_email():
         return _get_response("User not found", 404)
     is_positive = UserService.user_is_positive(db_session, user.id)
     json_user = user.serialize()
-    json_user["is_positive"] = is_positive
+    if is_positive is None:
+        json_user["is_positive"] = False
+    else:
+        json_user["is_positive"] = True
     return _get_response(json_user, 200, True)
 
 
@@ -233,13 +245,13 @@ def get_user_by_id(id):
             return _get_response("User not found", 404)
     is_positive = UserService.user_is_positive(db_session, user.id)
     json_user = user.serialize()
-    json_user["is_positive"] = is_positive
+    if is_positive is None:
+        json_user["is_positive"] = False
+    else:
+        json_user["is_positive"] = True
     return _get_response(json_user, 200, True)
 
 
-###
-# for healty authority
-###
 def report_positive():
     users = UserService.report_positive(db_session)
     json_users = list_obj_json("users", users)
