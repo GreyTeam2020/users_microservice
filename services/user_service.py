@@ -106,6 +106,7 @@ class UserService:
 
     @staticmethod
     def delete_user(db_session, user_id: int):
+        db_session.query(Positive).filter_by(user_id=user_id).delete()
         db_session.query(User).filter_by(id=user_id).delete()
         db_session.commit()
         return True
@@ -139,7 +140,9 @@ class UserService:
         :return: a boolean value as result
         """
         user = UserService.user_is_present(db_session, user_email, user_phone)
-
+        positive = UserService.user_is_positive(db_session, user.id)
+        if positive is not None:
+            return False
         new_positive = Positive()
         new_positive.from_date = datetime.now()
         new_positive.marked = True
