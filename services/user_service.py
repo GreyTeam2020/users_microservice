@@ -163,8 +163,7 @@ class UserService:
         )
         if positive is None:
             return False
-
-        positive.marked = False
+        db_session.query(Positive).filter_by(user_id=user_id, marked=True).delete()
         db_session.commit()
         return True
 
