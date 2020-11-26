@@ -1,5 +1,6 @@
 # User services
 [![Build Status](https://travis-ci.com/GreyTeam2020/users_microservice.svg?token=sy94HsRanu5mrpdsRQbH&branch=main)](https://travis-ci.com/GreyTeam2020/users_microservice)
+[![Coverage Status](https://coveralls.io/repos/github/GreyTeam2020/users_microservice/badge.svg)](https://coveralls.io/github/GreyTeam2020/users_microservice)
 
 ## Table of content
 
